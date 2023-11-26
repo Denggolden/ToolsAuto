@@ -69,6 +69,14 @@ typedef struct TRListRetInfo{
     QString Comment="";
 }TRListRetInfo;
 
+typedef struct TRTSFileInfo{
+    TRTSFileInfo(){};
+    TRTSFileInfo(QString srcTRTSFilePath,QString outQMFilePath,QString command){SrcTRTSFilePath=srcTRTSFilePath;OutQMFilePath=outQMFilePath;Command=command;};
+    QString SrcTRTSFilePath;
+    QString OutQMFilePath;
+    QString Command;
+}TRTSFileInfo;
+
 class DataModel
 {
     //Q_OBJECT

@@ -11,6 +11,7 @@ class TitleBarWin;
 class TsFileCreateWin;
 class TsFileExportWin;
 class TsFileTranslateWin;
+class QMFileGenerateWin;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWin; }
@@ -36,6 +37,7 @@ private:
     TsFileCreateWin *pTsFileCreateWin=nullptr;
     TsFileExportWin *pTsFileExportWin=nullptr;
     TsFileTranslateWin *pTsFileTranslateWin=nullptr;
+    QMFileGenerateWin *pQMFileGenerateWin=nullptr;
 
 public:
     void InitListWidget();

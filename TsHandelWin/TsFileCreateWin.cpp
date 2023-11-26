@@ -353,7 +353,7 @@ void TsFileCreateWin::HandelCommandList()
         emit AppendPossessLog(tr("-------开始处理------"));
         for (int index=0;index<CommandListSize ;index++ ) {
             QString command = CommandInfoList.at(index).Command;
-            qDebug()<<"command: "<<command;
+            //qDebug()<<"command: "<<command;
             emit AppendPossessLog(QString(tr("-------正在处理 当前第：%1项 共：%2项------\n")).arg(index+1).arg(CommandListSize)+CommandInfoList.at(index).TSFilePath);
             QProcess p;
             p.start(command);

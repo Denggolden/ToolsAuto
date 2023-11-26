@@ -18,6 +18,7 @@ class TitleBarWin;
 class TsFileCreateWin;
 class TsFileExportWin;
 class TsFileTranslateWin;
+class QMFileGenerateWin;
 
 class MainWin;
 
@@ -40,6 +41,7 @@ private:
     TsFileCreateWin *pTsFileCreateWin=nullptr;
     TsFileExportWin *pTsFileExportWin=nullptr;
     TsFileTranslateWin *pTsFileTranslateWin=nullptr;
+    QMFileGenerateWin *pQMFileGenerateWin=nullptr;
 
     MainWin *pMainWin=nullptr;
 

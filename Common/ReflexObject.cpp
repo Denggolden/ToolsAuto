@@ -6,6 +6,7 @@
 #include "TsHandelWin/TsFileCreateWin.h"
 #include "TsHandelWin/TsFileExportWin.h"
 #include "TsHandelWin/TsFileTranslateWin.h"
+#include "TsHandelWin/QMFileGenerateWin.h"
 
 #include "MainWin.h"
 
@@ -60,6 +61,7 @@ void ReflexObject::InitObjectIns()
     CreateWin(TsFileCreateWin,TsFileCreateWin);
     CreateWin(TsFileExportWin,TsFileExportWin);
     CreateWin(TsFileTranslateWin,TsFileTranslateWin);
+    CreateWin(QMFileGenerateWin,QMFileGenerateWin);
 
     CreateWin(MainWin,MainWin);
 }

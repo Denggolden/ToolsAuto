@@ -19,6 +19,7 @@
 #include "TsHandelWin/TsFileExportWin.h"
 #include "TsHandelWin/TsFileTranslateWin.h"
 #include "DataManage/DataOperate.h"
+#include "TsHandelWin/QMFileGenerateWin.h"
 
 #include <QDesktopWidget>
 
@@ -64,7 +65,7 @@ void MainWin::InitListWidget()
     pListWidget->setFont(QFont("Microsoft YaHei", 12, QFont::Bold));
 
     QStringList listName;listName.clear();
-    listName<<tr("TS文件生成")<<tr("TS文件导出")<<tr("TS文件翻译");
+    listName<<tr("TS文件生成")<<tr("TS文件导出")<<tr("TS文件翻译")<<tr("QM文件生成");
     pListWidget->addItems(listName);
 
     connect(pListWidget,&QListWidget::currentRowChanged,this,&MainWin::CurrentRowChangedSlots);
@@ -77,10 +78,12 @@ void MainWin::InitStackedWidget()
     pTsFileCreateWin= dynamic_cast<TsFileCreateWin*>(ReflexObject::Instance()->GetObjectIns("TsFileCreateWin"));
     pTsFileExportWin=dynamic_cast<TsFileExportWin*>(ReflexObject::Instance()->GetObjectIns("TsFileExportWin"));
     pTsFileTranslateWin=dynamic_cast<TsFileTranslateWin*>(ReflexObject::Instance()->GetObjectIns("TsFileTranslateWin"));
+    pQMFileGenerateWin=dynamic_cast<QMFileGenerateWin*>(ReflexObject::Instance()->GetObjectIns("QMFileGenerateWin"));
 
     pStackedWidget->addWidget(pTsFileCreateWin);
     pStackedWidget->addWidget(pTsFileExportWin);
     pStackedWidget->addWidget(pTsFileTranslateWin);
+    pStackedWidget->addWidget(pQMFileGenerateWin);
 }
 
 void MainWin::InitWinCtrl()
@@ -110,6 +113,9 @@ void MainWin::CurrentRowChangedSlots(int curRow)
     }
     else if(curRow==2){
         pStackedWidget->setCurrentWidget(pTsFileTranslateWin);
+    }
+    else if(curRow==3){
+        pStackedWidget->setCurrentWidget(pQMFileGenerateWin);
     }
 }
 
