@@ -112,3 +112,83 @@ void ExcelHandel::LoadTRListFile(QString tRListFilePath, QString languageType, Q
     delete pXlsx;
     pXlsx=nullptr;
 }
+
+void ExcelHandel::MergeTRListFile(const QString &newTRListFilePath, const QString &oldTRListFilePath)
+{
+    //读取翻译文件
+    QXlsx::Document* pNewXlsx = nullptr;
+    if(!pNewXlsx){
+        pNewXlsx = new QXlsx::Document(newTRListFilePath);
+    }
+    if(!pNewXlsx->load()){// 判断文件是否打开成功（也可以使用isLoadPackage）
+        qInfo() << "excel打开失败!";
+        return;
+    }
+
+    int rowCount = pNewXlsx->dimension().rowCount();           // 获取最大行数
+    int colCount = pNewXlsx->dimension().columnCount();     // 获取最大列数
+
+    for(int col=2;col<=colCount;col++){
+        QString targetLang=pNewXlsx->read(1,col).toString().trimmed();
+        QList<TRListExportInfo> tRListExportInfoList;tRListExportInfoList.clear();
+        //拿到源文及目标译文
+        //为了时间复杂度空间复杂度综合及开发效率目前这样处理比较稳妥
+        CreateTargetTranslationList(oldTRListFilePath,targetLang,tRListExportInfoList);
+        for(int row = 2; row <= rowCount; row++){
+            //通过 源文 找到目标译文
+            QString source=pNewXlsx->read(row,1).toString().trimmed();
+            QString translation=FindTargetTranslation(source,tRListExportInfoList);
+            pNewXlsx->write(row,col,translation);
+        }
+    }
+
+    pNewXlsx->save();
+    delete pNewXlsx;
+    pNewXlsx=nullptr;
+}
+
+void ExcelHandel::CreateTargetTranslationList(const QString &oldTRListFilePath, const QString &targetLang, QList<TRListExportInfo> &tRListExportInfoList)
+{
+    QXlsx::Document* pOldXlsx = nullptr;
+    if(!pOldXlsx){
+        pOldXlsx = new QXlsx::Document(oldTRListFilePath);
+    }
+    if(!pOldXlsx->load()){// 判断文件是否打开成功（也可以使用isLoadPackage）
+        qInfo() << "excel打开失败!";
+        return;
+    }
+
+    int tRColIndex=0;
+    int rowCount = pOldXlsx->dimension().rowCount();           // 获取最大行数
+    int colCount = pOldXlsx->dimension().columnCount();     // 获取最大列数
+    //qDebug()<<"colCount: "<<colCount;
+    for(int col = 2; col <= colCount; col++){//找到翻译目标语言所在的列
+        QString langType=pOldXlsx->read(1,col).toString().trimmed();
+        if(langType==targetLang){
+            tRColIndex=col;
+            break;
+        }
+    }
+
+    for(int row = 2; row <= rowCount; row++){// 遍历每一行
+        QString source=pOldXlsx->read(row,1).toString().trimmed();
+        QString translation=pOldXlsx->read(row,tRColIndex).toString().trimmed();
+        tRListExportInfoList.push_back(TRListExportInfo(source,translation));
+    }
+
+    delete pOldXlsx;
+    pOldXlsx=nullptr;
+}
+
+QString ExcelHandel::FindTargetTranslation(const QString &source, const QList<TRListExportInfo> &tRListExportInfoList)
+{
+    QString translation="";
+    int tRListExportInfoListSize=tRListExportInfoList.size();
+    for(int index=0;index<tRListExportInfoListSize;index++){
+        if(tRListExportInfoList.at(index).Source==source){
+            translation=tRListExportInfoList.at(index).Translation;
+            break;
+        }
+    }
+    return translation;
+}

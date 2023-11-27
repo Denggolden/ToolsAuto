@@ -77,6 +77,13 @@ typedef struct TRTSFileInfo{
     QString Command;
 }TRTSFileInfo;
 
+typedef  struct TRListExportInfo{
+    TRListExportInfo(){};
+    TRListExportInfo(QString source,QString translation){Source=source;Translation=translation;};
+    QString Source;
+    QString Translation;
+}TRListExportInfo ;
+
 class DataModel
 {
     //Q_OBJECT

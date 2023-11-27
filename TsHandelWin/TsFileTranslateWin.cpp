@@ -321,8 +321,16 @@ void TsFileTranslateWin::SelectOldFileFun()
 }
 
 void TsFileTranslateWin::MergeTRListFileFun()
-{
-
+{ 
+    emit AppendPossessLog(tr("-------开始处理------"),"textEdit_2");
+    emit AppendPossessLog(QString(tr("-------正在处理 当前第：%1项 共：%2项------\n")).arg(1).arg(1)+NewTRListFilePath+"\n","textEdit_2");
+    emit AppendPossessLog(QString(tr("-------从：%1\n处理至------\n%2")).arg(OldTRListFilePath).arg(NewTRListFilePath),"textEdit_2");
+    ExcelHandel excelHandel;
+    excelHandel.MergeTRListFile(NewTRListFilePath,OldTRListFilePath);
+    emit AppendPossessLog(QString(tr("-------处理结果【%1】------\n")).arg(tr("成功")),"textEdit_2");
+    emit AppendPossessLog(tr("-------处理完成------\n"),"textEdit_2");
+    emit AppendPossessLog(QString(tr("-------总计：%1项    成功：%2项    失败：%3项------\n")).arg(1).arg(1).arg(0),"textEdit_2");
+    emit CtrlSetEnabled(tr("MergeTRListFileTBtn"),tr("合并翻译清单文件"),true);
 }
 
 void TsFileTranslateWin::HandelTRFileInfoList(QList<TRFileInfo> tRFileInfoList)
@@ -504,6 +512,10 @@ void TsFileTranslateWin::CtrlSetEnabledSlots(const QString &ctrlName, const QStr
     if(ctrlName==tr("TRTSFileTBtn")){
         ui->TRTSFileTBtn->setText(txtStr);
         ui->TRTSFileTBtn->setEnabled(isEnabled);
+    }
+    else if (ctrlName==tr("MergeTRListFileTBtn")) {
+        ui->MergeTRListFileTBtn->setText(txtStr);
+        ui->MergeTRListFileTBtn->setEnabled(isEnabled);
     }
 }
 

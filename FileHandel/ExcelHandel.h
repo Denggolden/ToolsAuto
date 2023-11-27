@@ -16,6 +16,10 @@ public:
     void TSFileExportToExcelSummary(QString exportFileName,QStringList header,const QList<TSFileSummaryInfo> &tSFileSummaryInfoList);
 
     void LoadTRListFile(QString tRListFilePath,QString languageType,QList<TSFileInfo> &TRFileInfoList);
+
+    void MergeTRListFile(const QString &newTRListFilePath,const QString &oldTRListFilePath);
+    void CreateTargetTranslationList(const QString &oldTRListFilePath,const QString &targetLang,QList<TRListExportInfo> &tRListExportInfoList);
+    QString FindTargetTranslation(const QString &source,const QList<TRListExportInfo> &tRListExportInfoList);
 };
 
 #endif // EXCELHANDEL_H
