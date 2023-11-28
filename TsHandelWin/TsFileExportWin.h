@@ -1,7 +1,8 @@
 ﻿#ifndef TSFILEEXPORTWIN_H
 #define TSFILEEXPORTWIN_H
 
-#include <QWidget>
+//#include <QWidget>
+#include "Common/WidgetBase.h"
 #include "DataManage/DataModel.h"
 
 class QToolButton;
@@ -14,7 +15,7 @@ namespace Ui {
 class TsFileExportWin;
 }
 
-class TsFileExportWin : public QWidget
+class TsFileExportWin : public WidgetBase
 {
     Q_OBJECT
 
@@ -32,6 +33,9 @@ private:
     QString SourceFileName="";
     int WorkMode=0;
     int SourceFileNameIndex=-1;
+
+protected:
+    void InitClass() override;
 
 public:
     void InitGroupBox();
@@ -65,6 +69,7 @@ public:
 
     void HandelExportFileInfoList(QList<ExportFileInfo> exportFileInfoList);
     void ForEachTSFileSeparate(QDomElement *root,QList<TSFileInfo> &tSFileInfoList);
+    void ClearSameData(const QList<TSFileInfo> &srcTSFileInfoList,QList<TSFileInfo> &outTSFileInfoList);
 
     void HandelSummaryExportInfoList(QList<SummaryExportInfo> summaryExportInfoList);
     void ForEachTSFileSummarySource(QDomElement *root,QList<TSFileSummaryInfo> &tSFileSummaryInfoList);

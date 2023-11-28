@@ -1,7 +1,8 @@
 ﻿#ifndef QMFILEGENERATEWIN_H
 #define QMFILEGENERATEWIN_H
 
-#include <QWidget>
+//#include <QWidget>
+#include "Common/WidgetBase.h"
 #include "DataManage/DataModel.h"
 
 class QToolButton;
@@ -11,7 +12,7 @@ namespace Ui {
 class QMFileGenerateWin;
 }
 
-class QMFileGenerateWin : public QWidget
+class QMFileGenerateWin : public WidgetBase
 {
     Q_OBJECT
 
@@ -23,12 +24,16 @@ private:
     Ui::QMFileGenerateWin *ui;
     QList<QToolButton*>ToolButtonList;
 
+protected:
+    void InitClass() override;
+
 public:
     void InitGroupBox();
     void InitFrame();
     void InitTextEdit();
     void InitToolButton();
     void InitTreeWidget();
+    void InitEventFilterObj();
 
     void LoadTranslateTSFile();
     void FoEachDir(QString dirPath,QTreeWidgetItem* root);
@@ -50,6 +55,9 @@ public slots:
     void TreeWidgetItemChanged(QTreeWidgetItem *item, int column);
     void CtrlSetEnabledSlots(const QString &ctrlName,const QString &txtStr,bool isEnabled);
     void AppendPossessLogSlots(const QString &logStr);
+
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
 };
 
 #endif // QMFILEGENERATEWIN_H

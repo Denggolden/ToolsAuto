@@ -14,11 +14,19 @@
 #include <thread>
 
 TsFileExportWin::TsFileExportWin(QWidget *parent) :
-    QWidget(parent),
+    WidgetBase(parent),
     ui(new Ui::TsFileExportWin)
 {
     ui->setupUi(this);
+}
 
+TsFileExportWin::~TsFileExportWin()
+{
+    delete ui;
+}
+
+void TsFileExportWin::InitClass()
+{
     InitGroupBox();
     InitFrame();
     InitTextEdit();
@@ -35,11 +43,6 @@ TsFileExportWin::TsFileExportWin(QWidget *parent) :
 
     connect(this,static_cast<void (TsFileExportWin::*)(const QString &,const QString &,bool)>(&TsFileExportWin::CtrlSetEnabled), this,&TsFileExportWin::CtrlSetEnabledSlots);
     connect(this,static_cast<void (TsFileExportWin::*)(const QString &)>(&TsFileExportWin::AppendPossessLog), this,&TsFileExportWin::AppendPossessLogSlots);
-}
-
-TsFileExportWin::~TsFileExportWin()
-{
-    delete ui;
 }
 
 void TsFileExportWin::InitGroupBox()
@@ -474,11 +477,16 @@ void TsFileExportWin::HandelExportFileInfoList(QList<ExportFileInfo> exportFileI
         fileIn.close();
 
         QList<TSFileInfo> tSFileInfoList;tSFileInfoList.clear();
+        QList<TSFileInfo> outTSFileInfoList;outTSFileInfoList.clear();
 
         QDomElement root = doc.documentElement();//读取根节点
         ForEachTSFileSeparate(&root,tSFileInfoList);
+        //去重
+        ClearSameData(tSFileInfoList,outTSFileInfoList);
+        //tSFileInfoList:原始数据 outTSFileInfoList 去重后数据
+
         ExcelHandel excelHandel;
-        excelHandel.TSFileExportToExcelSeparate(exportFileName,ExportItem,tSFileInfoList);
+        excelHandel.TSFileExportToExcelSeparate(exportFileName,ExportItem,outTSFileInfoList);
 
         handleSuccessCount++;
         emit AppendPossessLog(QString(tr("-------处理结果【%1】------\n")).arg(handelResult));
@@ -505,6 +513,15 @@ void TsFileExportWin::ForEachTSFileSeparate(QDomElement *root, QList<TSFileInfo>
         }
         ForEachTSFileSeparate(&childEle,tSFileInfoList);
         childEle=childEle.nextSiblingElement();
+    }
+}
+
+void TsFileExportWin::ClearSameData(const QList<TSFileInfo> &srcTSFileInfoList, QList<TSFileInfo> &outTSFileInfoList)
+{
+    for(auto item : srcTSFileInfoList){
+        if (!outTSFileInfoList.contains(item)){
+            outTSFileInfoList<<item;
+        }
     }
 }
 

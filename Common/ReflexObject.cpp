@@ -1,18 +1,22 @@
 ﻿#include "ReflexObject.h"
 #include <QDebug>
+#include "Common/ObjectBase.h"
+#include "Common/WidgetBase.h"
+
+#include "MainWin.h"
 
 #include "StyleCtrl/TitleBarWin.h"
+#include "StyleCtrl/StatusBarWin.h"
 
+#include "TsHandelWin/TsHandelMainWin.h"
 #include "TsHandelWin/TsFileCreateWin.h"
 #include "TsHandelWin/TsFileExportWin.h"
 #include "TsHandelWin/TsFileTranslateWin.h"
 #include "TsHandelWin/QMFileGenerateWin.h"
 
-#include "MainWin.h"
-
 ReflexObject ReflexObject::Ins;
 
-void ReflexObject::AddObjectIns(QWidget *pObject)
+void ReflexObject::AddObjectIns(QObject *pObject)
 {
     QString objectName=pObject->objectName();
     auto it = ObjectMap.find(objectName);
@@ -35,7 +39,7 @@ void ReflexObject::DeleteObjectIns(QString objectName)
     }
 }
 
-QWidget *ReflexObject::GetObjectIns(QString objectName)
+QObject *ReflexObject::GetObjectIns(QString objectName)
 {
     if(ObjectMap.contains(objectName)){
         qDebug()<<"---"<<objectName<<" find---"<<"  Address:"<<(void*)ObjectMap.find(objectName).value();
@@ -56,12 +60,38 @@ ReflexObject *ReflexObject::Instance()
 
 void ReflexObject::InitObjectIns()
 {
-    CreateWin(TitleBarWin,TitleBarWin);
+    //主窗口
+    CreateWin(MainWin,MainWin);
 
+    //标题栏
+    CreateWin(TitleBarWin,TitleBarWin);
+    //状态栏
+    CreateWin(StatusBarWin,StatusBarWin);
+
+    //软件主体-Qt翻译自动化
+    CreateWin(TsHandelMainWin,TsHandelMainWin);
     CreateWin(TsFileCreateWin,TsFileCreateWin);
     CreateWin(TsFileExportWin,TsFileExportWin);
     CreateWin(TsFileTranslateWin,TsFileTranslateWin);
     CreateWin(QMFileGenerateWin,QMFileGenerateWin);
 
-    CreateWin(MainWin,MainWin);
+    InitClassObj();
+}
+
+void ReflexObject::InitClassObj()
+{
+    QMap<QString, QObject*>::iterator it;
+    for (it = ObjectMap.begin(); it != ObjectMap.end(); ++it){
+        qDebug() << it.key() << ":" << it.value();
+        if ((dynamic_cast<ObjectBase*>(it.value())) != nullptr) {
+            //qDebug() << "此类为 ObjectBase";
+            ObjectBase *pObjectBase = dynamic_cast<ObjectBase*>(it.value());
+            pObjectBase->InitClass();
+        }
+        if ((dynamic_cast<WidgetBase*>(it.value())) != nullptr) {
+            //qDebug() << "此类为 WidgetBase";
+            WidgetBase *pWidgetBase = dynamic_cast<WidgetBase*>(it.value());
+            pWidgetBase->InitClass();
+        }
+    }
 }

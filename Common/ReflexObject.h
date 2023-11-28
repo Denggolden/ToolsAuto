@@ -14,7 +14,9 @@
     Ins.AddObjectIns(p##ObjName);
 
 class TitleBarWin;
+class StatusBarWin;
 
+class TsHandelMainWin;
 class TsFileCreateWin;
 class TsFileExportWin;
 class TsFileTranslateWin;
@@ -25,10 +27,11 @@ class MainWin;
 class ReflexObject
 {
 public:
-    void AddObjectIns(QWidget* pObject);
+    void AddObjectIns(QObject* pObject);
     void DeleteObjectIns(QString objectName);
-    QWidget *GetObjectIns(QString objectName);
+    QObject *GetObjectIns(QString objectName);
     void InitObjectIns();
+    void InitClassObj();
 
 public:
     ReflexObject(ReflexObject&) = delete;
@@ -37,7 +40,9 @@ public:
 
 private:
     TitleBarWin* pTitleBarWin=nullptr;
+    StatusBarWin *pStatusBarWin=nullptr;
 
+    TsHandelMainWin *pTsHandelMainWin=nullptr;
     TsFileCreateWin *pTsFileCreateWin=nullptr;
     TsFileExportWin *pTsFileExportWin=nullptr;
     TsFileTranslateWin *pTsFileTranslateWin=nullptr;
@@ -48,7 +53,7 @@ private:
 private:
     ReflexObject();
     static ReflexObject Ins;
-    QMap<QString, QWidget*> ObjectMap;
+    QMap<QString, QObject*> ObjectMap;
 };
 
 #endif // REFLEXOBJECT_H

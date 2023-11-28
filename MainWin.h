@@ -1,23 +1,22 @@
 ﻿#ifndef MAINWIN_H
 #define MAINWIN_H
 
-#include <QWidget>
+//#include <QWidget>
+#include "Common/WidgetBase.h"
 
 class QListWidget;
 class QStackedWidget;
 
 class TitleBarWin;
+class StatusBarWin;
 
-class TsFileCreateWin;
-class TsFileExportWin;
-class TsFileTranslateWin;
-class QMFileGenerateWin;
+class TsHandelMainWin;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWin; }
 QT_END_NAMESPACE
 
-class MainWin : public QWidget
+class MainWin : public WidgetBase
 {
     Q_OBJECT
 
@@ -33,11 +32,12 @@ private:
     QStackedWidget *pStackedWidget=nullptr;
 
     TitleBarWin *pTitleBarWin=nullptr;
+    StatusBarWin *pStatusBarWin=nullptr;
 
-    TsFileCreateWin *pTsFileCreateWin=nullptr;
-    TsFileExportWin *pTsFileExportWin=nullptr;
-    TsFileTranslateWin *pTsFileTranslateWin=nullptr;
-    QMFileGenerateWin *pQMFileGenerateWin=nullptr;
+    TsHandelMainWin *pTsHandelMainWin=nullptr;
+
+protected:
+    void InitClass() override;
 
 public:
     void InitListWidget();

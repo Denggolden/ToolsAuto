@@ -15,22 +15,28 @@
 
 #include "Common/ReflexObject.h"
 #include "StyleCtrl/TitleBarWin.h"
-#include "TsHandelWin/TsFileCreateWin.h"
-#include "TsHandelWin/TsFileExportWin.h"
-#include "TsHandelWin/TsFileTranslateWin.h"
 #include "DataManage/DataOperate.h"
-#include "TsHandelWin/QMFileGenerateWin.h"
+#include "TsHandelWin/TsHandelMainWin.h"
+#include "StyleCtrl/StatusBarWin.h"
 
 #include <QDesktopWidget>
 
 #pragma comment(lib,"user32")
 
 MainWin::MainWin(QWidget *parent)
-    : QWidget(parent)
+    : WidgetBase(parent)
     , ui(new Ui::MainWin)
 {
     ui->setupUi(this);
+}
 
+MainWin::~MainWin()
+{
+    delete ui;
+}
+
+void MainWin::InitClass()
+{
     InitListWidget();
     InitStackedWidget();
     InitWinCtrl();
@@ -50,11 +56,6 @@ MainWin::MainWin(QWidget *parent)
     this->setWindowFlags(Qt::FramelessWindowHint);
 }
 
-MainWin::~MainWin()
-{
-    delete ui;
-}
-
 
 void MainWin::InitListWidget()
 {
@@ -65,7 +66,7 @@ void MainWin::InitListWidget()
     pListWidget->setFont(QFont("Microsoft YaHei", 12, QFont::Bold));
 
     QStringList listName;listName.clear();
-    listName<<tr("TS文件生成")<<tr("TS文件导出")<<tr("TS文件翻译")<<tr("QM文件生成");
+    listName<<tr("Qt翻译自动化")<<tr("待定");
     pListWidget->addItems(listName);
 
     connect(pListWidget,&QListWidget::currentRowChanged,this,&MainWin::CurrentRowChangedSlots);
@@ -75,15 +76,9 @@ void MainWin::InitStackedWidget()
 {
     pStackedWidget=new QStackedWidget();
 
-    pTsFileCreateWin= dynamic_cast<TsFileCreateWin*>(ReflexObject::Instance()->GetObjectIns("TsFileCreateWin"));
-    pTsFileExportWin=dynamic_cast<TsFileExportWin*>(ReflexObject::Instance()->GetObjectIns("TsFileExportWin"));
-    pTsFileTranslateWin=dynamic_cast<TsFileTranslateWin*>(ReflexObject::Instance()->GetObjectIns("TsFileTranslateWin"));
-    pQMFileGenerateWin=dynamic_cast<QMFileGenerateWin*>(ReflexObject::Instance()->GetObjectIns("QMFileGenerateWin"));
+    pTsHandelMainWin= dynamic_cast<TsHandelMainWin*>(ReflexObject::Instance()->GetObjectIns("TsHandelMainWin"));
 
-    pStackedWidget->addWidget(pTsFileCreateWin);
-    pStackedWidget->addWidget(pTsFileExportWin);
-    pStackedWidget->addWidget(pTsFileTranslateWin);
-    pStackedWidget->addWidget(pQMFileGenerateWin);
+    pStackedWidget->addWidget(pTsHandelMainWin);
 }
 
 void MainWin::InitWinCtrl()
@@ -93,10 +88,15 @@ void MainWin::InitWinCtrl()
     pLayout->addWidget(pStackedWidget);
 
     QVBoxLayout *pVBoxLayout=new QVBoxLayout();
+
     pTitleBarWin= dynamic_cast<TitleBarWin*>(ReflexObject::Instance()->GetObjectIns("TitleBarWin"));
     pTitleBarWin->setFixedHeight(30);
+    pStatusBarWin= dynamic_cast<StatusBarWin*>(ReflexObject::Instance()->GetObjectIns("StatusBarWin"));
+    pStatusBarWin->setFixedHeight(30);
+
     pVBoxLayout->addWidget(pTitleBarWin);
     pVBoxLayout->addItem(pLayout);
+    pVBoxLayout->addWidget(pStatusBarWin);
     pVBoxLayout->setContentsMargins(0, 0, 0, 0);//控件居中显示 消除四周边距
 
     this->setLayout(pVBoxLayout);
@@ -106,16 +106,7 @@ void MainWin::CurrentRowChangedSlots(int curRow)
 {
     qDebug()<<curRow<<"   "<<pListWidget->currentItem()->text();
     if(curRow==0){
-        pStackedWidget->setCurrentWidget(pTsFileCreateWin);
-    }
-    else if(curRow==1){
-        pStackedWidget->setCurrentWidget(pTsFileExportWin);
-    }
-    else if(curRow==2){
-        pStackedWidget->setCurrentWidget(pTsFileTranslateWin);
-    }
-    else if(curRow==3){
-        pStackedWidget->setCurrentWidget(pQMFileGenerateWin);
+        pStackedWidget->setCurrentWidget(pTsHandelMainWin);
     }
 }
 

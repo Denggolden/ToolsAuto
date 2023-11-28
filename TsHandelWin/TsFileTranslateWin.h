@@ -1,7 +1,8 @@
 ﻿#ifndef TSFILETRANSLATEWIN_H
 #define TSFILETRANSLATEWIN_H
 
-#include <QWidget>
+//#include <QWidget>
+#include "Common/WidgetBase.h"
 #include "DataManage/DataModel.h"
 
 class QToolButton;
@@ -12,7 +13,7 @@ namespace Ui {
 class TsFileTranslateWin;
 }
 
-class TsFileTranslateWin : public QWidget
+class TsFileTranslateWin : public WidgetBase
 {
     Q_OBJECT
 
@@ -32,6 +33,9 @@ private:
 
     QString NewTRListFilePath="";
     QString OldTRListFilePath="";
+
+protected:
+    void InitClass() override;
 
 public:
     void InitGroupBox();

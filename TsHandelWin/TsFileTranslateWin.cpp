@@ -14,11 +14,19 @@
 #include <thread>
 
 TsFileTranslateWin::TsFileTranslateWin(QWidget *parent) :
-    QWidget(parent),
+    WidgetBase(parent),
     ui(new Ui::TsFileTranslateWin)
 {
     ui->setupUi(this);
+}
 
+TsFileTranslateWin::~TsFileTranslateWin()
+{
+    delete ui;
+}
+
+void TsFileTranslateWin::InitClass()
+{
     InitGroupBox();
     InitFrame();
     InitLineEdit();
@@ -35,11 +43,6 @@ TsFileTranslateWin::TsFileTranslateWin(QWidget *parent) :
 
     connect(this,static_cast<void (TsFileTranslateWin::*)(const QString &,const QString &,bool)>(&TsFileTranslateWin::CtrlSetEnabled), this,&TsFileTranslateWin::CtrlSetEnabledSlots);
     connect(this,static_cast<void (TsFileTranslateWin::*)(const QString &,QString)>(&TsFileTranslateWin::AppendPossessLog), this,&TsFileTranslateWin::AppendPossessLogSlots);
-}
-
-TsFileTranslateWin::~TsFileTranslateWin()
-{
-    delete ui;
 }
 
 void TsFileTranslateWin::InitGroupBox()

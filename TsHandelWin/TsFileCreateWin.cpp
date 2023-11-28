@@ -12,11 +12,19 @@
 #include <thread>
 
 TsFileCreateWin::TsFileCreateWin(QWidget *parent) :
-    QWidget(parent),
+    WidgetBase(parent),
     ui(new Ui::TsFileCreateWin)
 {
     ui->setupUi(this);
+}
 
+TsFileCreateWin::~TsFileCreateWin()
+{
+    delete ui;
+}
+
+void TsFileCreateWin::InitClass()
+{
     InitGroupBox();
     InitFrame();
     InitLineEdit();
@@ -29,11 +37,6 @@ TsFileCreateWin::TsFileCreateWin(QWidget *parent) :
 
     connect(this,static_cast<void (TsFileCreateWin::*)(const QString &,const QString &,bool)>(&TsFileCreateWin::CtrlSetEnabled), this,&TsFileCreateWin::CtrlSetEnabledSlots);
     connect(this,static_cast<void (TsFileCreateWin::*)(const QString &)>(&TsFileCreateWin::AppendPossessLog), this,&TsFileCreateWin::AppendPossessLogSlots);
-}
-
-TsFileCreateWin::~TsFileCreateWin()
-{
-    delete ui;
 }
 
 void TsFileCreateWin::InitGroupBox()

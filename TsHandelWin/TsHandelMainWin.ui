@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TsHandelMainWin</class>
+ <widget class="QWidget" name="TsHandelMainWin">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>580</width>
+    <height>361</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>总览</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>模块名称：Qt翻译自动化
+
+模块作用：用于自动化进行Qt翻译工作，只需要很少的人工干预，大大降低人工工作量
+
+包含以下模块：
+
+TS文件生成：用于生成指定工程的原始TS文件
+
+TS文件导出：用于导出原始TS文件中源文译文翻译字段
+
+TS文件翻译：通过翻译文件及生成的原始TS文件生成翻译后的TS文件
+
+QM文件生成：通过生成翻译后的TS文件生成目标QM文件</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -9,29 +9,34 @@
 #include "FileHandel/DirOperate.h"
 #include <QProcess>
 #include <thread>
+#include "StyleCtrl/StatusBarWin.h"
+#include "Common/ReflexObject.h"
 
 QMFileGenerateWin::QMFileGenerateWin(QWidget *parent) :
-    QWidget(parent),
+    WidgetBase(parent),
     ui(new Ui::QMFileGenerateWin)
 {
     ui->setupUi(this);
-
-    InitGroupBox();
-    InitFrame();
-    InitTextEdit();
-    InitToolButton();
-    InitTreeWidget();
-
-    LoadTranslateTSFile();
-
-    connect(this,static_cast<void (QMFileGenerateWin::*)(const QString &,const QString &,bool)>(&QMFileGenerateWin::CtrlSetEnabled), this,&QMFileGenerateWin::CtrlSetEnabledSlots);
-    connect(this,static_cast<void (QMFileGenerateWin::*)(const QString &)>(&QMFileGenerateWin::AppendPossessLog), this,&QMFileGenerateWin::AppendPossessLogSlots);
-
 }
 
 QMFileGenerateWin::~QMFileGenerateWin()
 {
     delete ui;
+}
+
+void QMFileGenerateWin::InitClass()
+{
+    InitGroupBox();
+    InitFrame();
+    InitTextEdit();
+    InitToolButton();
+    InitTreeWidget();
+    InitEventFilterObj();
+
+    LoadTranslateTSFile();
+
+    connect(this,static_cast<void (QMFileGenerateWin::*)(const QString &,const QString &,bool)>(&QMFileGenerateWin::CtrlSetEnabled), this,&QMFileGenerateWin::CtrlSetEnabledSlots);
+    connect(this,static_cast<void (QMFileGenerateWin::*)(const QString &)>(&QMFileGenerateWin::AppendPossessLog), this,&QMFileGenerateWin::AppendPossessLogSlots);
 }
 
 void QMFileGenerateWin::InitGroupBox()
@@ -88,6 +93,14 @@ void QMFileGenerateWin::InitTreeWidget()
     connect(ui->treeWidget,static_cast<void (QTreeWidget::*)(QTreeWidgetItem *,int)>(&QTreeWidget::itemChanged), this,&QMFileGenerateWin::TreeWidgetItemChanged);
 
     //connect(ui->treeWidget,static_cast<void (QTreeWidget::*)(QTreeWidgetItem *,int)>(&QTreeWidget::itemPressed), this,&QMFileGenerateWin::TreeWidgetItemPressed);
+}
+
+void QMFileGenerateWin::InitEventFilterObj()
+{
+    ui->treeWidget->installEventFilter(this);
+    ui->textEdit->installEventFilter(this);
+    ui->RefreshTSFileListTBtn->installEventFilter(this);
+    ui->GenerateQMFileTBtn->installEventFilter(this);
 }
 
 void QMFileGenerateWin::LoadTranslateTSFile()
@@ -294,4 +307,33 @@ void QMFileGenerateWin::CtrlSetEnabledSlots(const QString &ctrlName, const QStri
 void QMFileGenerateWin::AppendPossessLogSlots(const QString &logStr)
 {
     ui->textEdit->append(logStr);
+}
+
+bool QMFileGenerateWin::eventFilter(QObject *watched, QEvent *event)
+{
+    if(watched == ui->treeWidget||watched == ui->textEdit||watched == ui->RefreshTSFileListTBtn||watched == ui->GenerateQMFileTBtn){
+        if(event->type() == QEvent::Enter){
+            StatusBarWin * pStatusBarWin= dynamic_cast<StatusBarWin*>(ReflexObject::Instance()->GetObjectIns("StatusBarWin"));
+            QString tipMsg=tr("");
+            if(watched == ui->treeWidget)
+                tipMsg=tr("展示翻译的TS文件列表");
+            else if (watched == ui->textEdit)
+                tipMsg=tr("展示生成QM文件过程中处理过程");
+            else if (watched == ui->RefreshTSFileListTBtn)
+                tipMsg=tr("【点击】刷新翻译的TS文件列表TS文件列表");
+            else if (watched == ui->GenerateQMFileTBtn)
+                tipMsg=tr("【点击】生成QM文件");
+            pStatusBarWin->SetTipInfo(tipMsg);
+            /*鼠标进入按钮事件*/
+            return true;
+        }
+        else if(event->type() == QEvent::Leave){
+            StatusBarWin * pStatusBarWin= dynamic_cast<StatusBarWin*>(ReflexObject::Instance()->GetObjectIns("StatusBarWin"));
+            QString tipMsg=tr("");
+            pStatusBarWin->SetTipInfo(tipMsg);
+            /*鼠标离开按钮事件*/
+            return true;
+        }
+    }
+    return QWidget::eventFilter(watched, event);
 }

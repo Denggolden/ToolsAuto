@@ -1,7 +1,8 @@
 ﻿#ifndef TSFILECREATEWIN_H
 #define TSFILECREATEWIN_H
 
-#include <QWidget>
+//#include <QWidget>
+#include "Common/WidgetBase.h"
 
 typedef struct CommandInfo{
     CommandInfo(){};
@@ -16,7 +17,7 @@ namespace Ui {
 class TsFileCreateWin;
 }
 
-class TsFileCreateWin : public QWidget
+class TsFileCreateWin : public WidgetBase
 {
     Q_OBJECT
 
@@ -33,6 +34,9 @@ private:
     int KitSelectIndex=0;
     int TSFileSelectIndex=0;
     int TSFileNameCount=0;
+
+protected:
+    void InitClass() override;
 
 public:
     void InitGroupBox();

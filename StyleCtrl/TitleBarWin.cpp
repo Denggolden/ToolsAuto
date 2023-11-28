@@ -5,23 +5,29 @@
 #include <QStyle>
 #include "MainWin.h"
 #include "Common/ReflexObject.h"
+#include <QDebug>
+#include "StyleCtrl/StatusBarWin.h"
 
 TitleBarWin::TitleBarWin(QWidget *parent) :
-    QWidget(parent),
+    WidgetBase(parent),
     ui(new Ui::TitleBarWin)
 {
     ui->setupUi(this);
-
-    InitToolButton();
-
-//    this->layout()->setContentsMargins(3, 0, 3, 0);//控件居中显示 消除四周边距
-    this->setAttribute(Qt::WidgetAttribute::WA_StyledBackground);  // 重要
-//    this->setStyleSheet("background-color:DeepSkyBlue;");
 }
 
 TitleBarWin::~TitleBarWin()
 {
     delete ui;
+}
+
+void TitleBarWin::InitClass()
+{
+    InitToolButton();
+    InitEventFilterObj();
+
+    //    this->layout()->setContentsMargins(3, 0, 3, 0);//控件居中显示 消除四周边距
+    this->setAttribute(Qt::WidgetAttribute::WA_StyledBackground);  // 重要
+    this->setStyleSheet("background-color:LavenderBlush;");
 }
 
 void TitleBarWin::InitToolButton()
@@ -62,6 +68,13 @@ void TitleBarWin::InitToolButton()
     connect(ui->CloseWinTBtn, static_cast<void (QToolButton::*)(bool)>(&QToolButton::clicked), this,&TitleBarWin::CloseWinTBtnClicked);
 }
 
+void TitleBarWin::InitEventFilterObj()
+{
+    ui->MinWinTBtn->installEventFilter(this);
+    ui->MaxWinTBtn->installEventFilter(this);
+    ui->CloseWinTBtn->installEventFilter(this);
+}
+
 void TitleBarWin::MinWinTBtnClicked(bool checked)
 {
     MainWin *pMainWin = dynamic_cast<MainWin*>(ReflexObject::Instance()->GetObjectIns("MainWin"));
@@ -90,4 +103,31 @@ void TitleBarWin::MaxWinTBtnClicked(bool checked)
 void TitleBarWin::CloseWinTBtnClicked(bool checked)
 {
     qApp->quit();
+}
+
+bool TitleBarWin::eventFilter(QObject *watched, QEvent *event)
+{
+    if(watched == ui->MinWinTBtn||watched == ui->MaxWinTBtn||watched == ui->CloseWinTBtn){
+        if(event->type() == QEvent::Enter){
+            StatusBarWin * pStatusBarWin= dynamic_cast<StatusBarWin*>(ReflexObject::Instance()->GetObjectIns("StatusBarWin"));
+            QString tipMsg=tr("");
+            if(watched == ui->MinWinTBtn)
+                tipMsg=tr("最小化窗口");
+            else if (watched == ui->MaxWinTBtn)
+               tipMsg=tr("最大化/还原窗口");
+            else if (watched == ui->CloseWinTBtn)
+               tipMsg=tr("关闭应用");
+            pStatusBarWin->SetTipInfo(tipMsg);
+            /*鼠标进入按钮事件*/
+            return true;
+        }
+        else if(event->type() == QEvent::Leave){
+            StatusBarWin * pStatusBarWin= dynamic_cast<StatusBarWin*>(ReflexObject::Instance()->GetObjectIns("StatusBarWin"));
+            QString tipMsg=tr("");
+            pStatusBarWin->SetTipInfo(tipMsg);
+            /*鼠标离开按钮事件*/
+            return true;
+        }
+    }
+    return QWidget::eventFilter(watched, event);
 }
