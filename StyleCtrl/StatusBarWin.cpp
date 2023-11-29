@@ -22,6 +22,7 @@ void StatusBarWin::InitClass()
     InitLable();
     InitEventFilterObj();
 
+    this->layout()->setContentsMargins(10, 0, 0, 0);
     this->setAttribute(Qt::WidgetAttribute::WA_StyledBackground);  // 重要
     this->setStyleSheet("background-color:Seashell;");
 }

@@ -25,7 +25,7 @@ void TitleBarWin::InitClass()
     InitToolButton();
     InitEventFilterObj();
 
-    //    this->layout()->setContentsMargins(3, 0, 3, 0);//控件居中显示 消除四周边距
+    this->layout()->setContentsMargins(10, 0, 0, 0);
     this->setAttribute(Qt::WidgetAttribute::WA_StyledBackground);  // 重要
     this->setStyleSheet("background-color:LavenderBlush;");
 }
@@ -61,7 +61,7 @@ void TitleBarWin::InitToolButton()
     //设置最小化、关闭按钮的样式
     ui->MinWinTBtn->setStyleSheet("QToolButton{background-color:transparent;}QToolButton:hover{background-color:rgba(0,255,255,50);}");
     ui->MaxWinTBtn->setStyleSheet("QToolButton{background-color:transparent;}QToolButton:hover{background-color:rgba(0,255,255,50);}");
-    ui->CloseWinTBtn->setStyleSheet("QToolButton{background-color:transparent;}QToolButton:hover{background-color:rgba(0,255,255,50);}");
+    ui->CloseWinTBtn->setStyleSheet("QToolButton{background-color:transparent;}QToolButton:hover{background-color:rgba(255,0,0,90);}");
 
     connect(ui->MinWinTBtn, static_cast<void (QToolButton::*)(bool)>(&QToolButton::clicked), this,&TitleBarWin::MinWinTBtnClicked);
     connect(ui->MaxWinTBtn, static_cast<void (QToolButton::*)(bool)>(&QToolButton::clicked), this,&TitleBarWin::MaxWinTBtnClicked);
