@@ -2,7 +2,7 @@
 #define EXCELHANDEL_H
 
 #include <QObject>
-#include "DataManage/DataModel.h"
+#include "Src/DataManage/DataModel.h"
 
 class ExcelHandel
 {

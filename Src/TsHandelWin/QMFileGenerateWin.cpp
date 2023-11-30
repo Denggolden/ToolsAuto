@@ -3,14 +3,14 @@
 #include "ui_QMFileGenerateWin.h"
 
 #include <QDebug>
-#include "DataManage/DataOperate.h"
+#include "Src/DataManage/DataOperate.h"
 #include <QFileInfo>
 #include <QDir>
-#include "FileHandel/DirOperate.h"
+#include "Src/FileHandel/DirOperate.h"
 #include <QProcess>
 #include <thread>
-#include "StyleCtrl/StatusBarWin.h"
-#include "Common/ReflexObject.h"
+#include "Src/StyleCtrl/StatusBarWin.h"
+#include "Src/Common/ReflexObject.h"
 
 QMFileGenerateWin::QMFileGenerateWin(QWidget *parent) :
     WidgetBase(parent),

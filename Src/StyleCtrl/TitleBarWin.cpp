@@ -4,9 +4,9 @@
 
 #include <QStyle>
 #include "MainWin.h"
-#include "Common/ReflexObject.h"
+#include "Src/Common/ReflexObject.h"
 #include <QDebug>
-#include "StyleCtrl/StatusBarWin.h"
+#include "Src/StyleCtrl/StatusBarWin.h"
 
 TitleBarWin::TitleBarWin(QWidget *parent) :
     WidgetBase(parent),

@@ -3,14 +3,14 @@
 #include "ui_TsFileExportWin.h"
 
 #include <QDebug>
-#include "DataManage/DataOperate.h"
+#include "Src/DataManage/DataOperate.h"
 #include <QFileInfo>
 #include <QDir>
 #include <QMenu>
-#include "FileHandel/DirOperate.h"
+#include "Src/FileHandel/DirOperate.h"
 #include <QMessageBox>
 #include <QDomDocument>
-#include "FileHandel/ExcelHandel.h"
+#include "Src/FileHandel/ExcelHandel.h"
 #include <thread>
 
 TsFileExportWin::TsFileExportWin(QWidget *parent) :

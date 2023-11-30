@@ -3,14 +3,14 @@
 #include "ui_TsFileTranslateWin.h"
 
 #include <QDebug>
-#include "DataManage/DataOperate.h"
+#include "Src/DataManage/DataOperate.h"
 #include <QFileInfo>
 #include <QDir>
 #include <QFileDialog>
-#include "FileHandel/DirOperate.h"
+#include "Src/FileHandel/DirOperate.h"
 #include <QMessageBox>
 #include <QDomDocument>
-#include "FileHandel/ExcelHandel.h"
+#include "Src/FileHandel/ExcelHandel.h"
 #include <thread>
 
 TsFileTranslateWin::TsFileTranslateWin(QWidget *parent) :

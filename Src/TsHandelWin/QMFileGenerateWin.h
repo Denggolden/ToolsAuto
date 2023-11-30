@@ -2,8 +2,8 @@
 #define QMFILEGENERATEWIN_H
 
 //#include <QWidget>
-#include "Common/WidgetBase.h"
-#include "DataManage/DataModel.h"
+#include "Src/Common/WidgetBase.h"
+#include "Src/DataManage/DataModel.h"
 
 class QToolButton;
 class QTreeWidgetItem;

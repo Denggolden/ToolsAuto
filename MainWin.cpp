@@ -13,11 +13,11 @@
 #include <windowsx.h>
 #include <QPixmap>
 
-#include "Common/ReflexObject.h"
-#include "StyleCtrl/TitleBarWin.h"
-#include "DataManage/DataOperate.h"
-#include "TsHandelWin/TsHandelMainWin.h"
-#include "StyleCtrl/StatusBarWin.h"
+#include "Src/Common/ReflexObject.h"
+#include "Src/StyleCtrl/TitleBarWin.h"
+#include "Src/DataManage/DataOperate.h"
+#include "Src/TsHandelWin/TsHandelMainWin.h"
+#include "Src/StyleCtrl/StatusBarWin.h"
 
 #include <QDesktopWidget>
 

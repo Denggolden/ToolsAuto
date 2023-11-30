@@ -2,7 +2,7 @@
 #define STATUSBARWIN_H
 
 //#include <QWidget>
-#include "Common/WidgetBase.h"
+#include "Src/Common/WidgetBase.h"
 
 namespace Ui {
 class StatusBarWin;

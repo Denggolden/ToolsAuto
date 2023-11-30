@@ -2,7 +2,7 @@
 #include "ExcelHandel.h"
 #include <QDebug>
 
-#include "xlsxdocument.h"
+#include "ThirdLib/QXlsx/header/xlsxdocument.h"
 QXLSX_USE_NAMESPACE
 
 ExcelHandel::ExcelHandel()

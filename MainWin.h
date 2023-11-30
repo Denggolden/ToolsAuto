@@ -2,7 +2,7 @@
 #define MAINWIN_H
 
 //#include <QWidget>
-#include "Common/WidgetBase.h"
+#include "Src/Common/WidgetBase.h"
 
 class QListWidget;
 class QStackedWidget;

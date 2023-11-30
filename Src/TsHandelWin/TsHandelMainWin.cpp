@@ -3,11 +3,11 @@
 #include "ui_TsHandelMainWin.h"
 
 #include <QDebug>
-#include "Common/ReflexObject.h"
-#include "TsHandelWin/TsFileCreateWin.h"
-#include "TsHandelWin/TsFileExportWin.h"
-#include "TsHandelWin/TsFileTranslateWin.h"
-#include "TsHandelWin/QMFileGenerateWin.h"
+#include "Src/Common/ReflexObject.h"
+#include "Src/TsHandelWin/TsFileCreateWin.h"
+#include "Src/TsHandelWin/TsFileExportWin.h"
+#include "Src/TsHandelWin/TsFileTranslateWin.h"
+#include "Src/TsHandelWin/QMFileGenerateWin.h"
 
 TsHandelMainWin::TsHandelMainWin(QWidget *parent) :
     WidgetBase(parent),

@@ -2,7 +2,7 @@
 #include "StatusBarWin.h"
 #include "ui_StatusBarWin.h"
 
-#include "Common/ReflexObject.h"
+#include "Src/Common/ReflexObject.h"
 #include "StatusBarWin.h"
 
 StatusBarWin::StatusBarWin(QWidget *parent) :

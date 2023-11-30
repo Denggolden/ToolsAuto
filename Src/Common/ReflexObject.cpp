@@ -1,18 +1,18 @@
 ﻿#include "ReflexObject.h"
 #include <QDebug>
-#include "Common/ObjectBase.h"
-#include "Common/WidgetBase.h"
+#include "Src/Common/ObjectBase.h"
+#include "Src/Common/WidgetBase.h"
 
 #include "MainWin.h"
 
-#include "StyleCtrl/TitleBarWin.h"
-#include "StyleCtrl/StatusBarWin.h"
+#include "Src/StyleCtrl/TitleBarWin.h"
+#include "Src/StyleCtrl/StatusBarWin.h"
 
-#include "TsHandelWin/TsHandelMainWin.h"
-#include "TsHandelWin/TsFileCreateWin.h"
-#include "TsHandelWin/TsFileExportWin.h"
-#include "TsHandelWin/TsFileTranslateWin.h"
-#include "TsHandelWin/QMFileGenerateWin.h"
+#include "Src/TsHandelWin/TsHandelMainWin.h"
+#include "Src/TsHandelWin/TsFileCreateWin.h"
+#include "Src/TsHandelWin/TsFileExportWin.h"
+#include "Src/TsHandelWin/TsFileTranslateWin.h"
+#include "Src/TsHandelWin/QMFileGenerateWin.h"
 
 ReflexObject ReflexObject::Ins;
 

@@ -6,8 +6,8 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QProcess>
-#include "FileHandel/DirOperate.h"
-#include "DataManage/DataOperate.h"
+#include "Src/FileHandel/DirOperate.h"
+#include "Src/DataManage/DataOperate.h"
 
 #include <thread>
 
