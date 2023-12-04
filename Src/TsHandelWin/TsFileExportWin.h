@@ -33,6 +33,7 @@ private:
     QString SourceFileName="";
     int WorkMode=0;
     int SourceFileNameIndex=-1;
+    bool IsDeleteSame=true;
 
 protected:
     void InitClass() override;
@@ -74,8 +75,10 @@ public:
     void HandelSummaryExportInfoList(QList<SummaryExportInfo> summaryExportInfoList);
     void ForEachTSFileSummarySource(QDomElement *root,QList<TSFileSummaryInfo> &tSFileSummaryInfoList);
     void ForEachTSFileSummaryTran(QDomElement *root,QList<TSFileSummaryInfo> &tSFileSummaryInfoList);
+    void ForEachTSFileSummaryTran(QDomElement *root,QList<QString> &translationList);
     void ClearSameData(const QList<TSFileSummaryInfo> &srcTSFileSummaryInfoList,QList<TSFileSummaryInfo> &outTSFileSummaryInfoList);
     void AppendTranslation(QList<TSFileSummaryInfo> &tSFileSummaryInfoList,const QString &source,const QString &translation);
+    void AppendTranslation(QList<TSFileSummaryInfo> &tSFileSummaryInfoList,const QList<QString> &translationList);
 
 //    void CreateFalgEnableList(QTreeWidgetItem *item);
 //    void FoEachItemOfChileItem(QTreeWidgetItem *item);

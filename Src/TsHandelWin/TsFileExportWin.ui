@@ -52,6 +52,20 @@
            </property>
           </spacer>
          </item>
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>是否去重：</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBox_4">
+           <property name="text">
+            <string>是</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>

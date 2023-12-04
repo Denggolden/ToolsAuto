@@ -131,6 +131,7 @@ void TsFileExportWin::InitCheckBox()
 
     connect(ui->checkBox_2,static_cast<void (QCheckBox::*)(bool)>(&QCheckBox::clicked), this,&TsFileExportWin::CheckBoxClicked);
     connect(ui->checkBox_3,static_cast<void (QCheckBox::*)(bool)>(&QCheckBox::clicked), this,&TsFileExportWin::CheckBoxClicked);
+    connect(ui->checkBox_4,static_cast<void (QCheckBox::*)(bool)>(&QCheckBox::clicked), this,&TsFileExportWin::CheckBoxClicked);
 }
 
 void TsFileExportWin::InitRadioButton()
@@ -254,6 +255,7 @@ void TsFileExportWin::LoadWinStatus()
     ExportItem[1]=DataOperate::Instance()->GetIniFileNode(tr("TsFileExportWinGroup"),tr("ExportItem1"), tr("0")).toInt();
     ExportItem[2]=DataOperate::Instance()->GetIniFileNode(tr("TsFileExportWinGroup"),tr("ExportItem2"), tr("0")).toInt();
     SourceFileNameIndex=DataOperate::Instance()->GetIniFileNode(tr("TsFileExportWinGroup"),tr("SourceFileNameIndex"), tr("0")).toInt();
+    IsDeleteSame=DataOperate::Instance()->GetIniFileNode(tr("TsFileExportWinGroup"),tr("IsDeleteSame"), tr("1")).toInt();
 
     if(ExportItem[0])
         ui->checkBox->setCheckState(Qt::Checked);
@@ -261,6 +263,14 @@ void TsFileExportWin::LoadWinStatus()
         ui->checkBox_2->setCheckState(Qt::Checked);
     if(ExportItem[2])
         ui->checkBox_3->setCheckState(Qt::Checked);
+
+    if(IsDeleteSame){
+        ui->checkBox_4->setCheckState(Qt::Checked);
+        ui->checkBox_4->setText(tr("是"));
+    }else{
+        ui->checkBox_4->setCheckState(Qt::Unchecked);
+        ui->checkBox_4->setText(tr("否"));
+    }
 
     if(ui->comboBox_2->count()>SourceFileNameIndex)
         ui->comboBox_2->setCurrentIndex(SourceFileNameIndex);
@@ -477,16 +487,19 @@ void TsFileExportWin::HandelExportFileInfoList(QList<ExportFileInfo> exportFileI
         fileIn.close();
 
         QList<TSFileInfo> tSFileInfoList;tSFileInfoList.clear();
-        QList<TSFileInfo> outTSFileInfoList;outTSFileInfoList.clear();
-
         QDomElement root = doc.documentElement();//读取根节点
         ForEachTSFileSeparate(&root,tSFileInfoList);
-        //去重
-        ClearSameData(tSFileInfoList,outTSFileInfoList);
-        //tSFileInfoList:原始数据 outTSFileInfoList 去重后数据
 
-        ExcelHandel excelHandel;
-        excelHandel.TSFileExportToExcelSeparate(exportFileName,ExportItem,outTSFileInfoList);
+        if(IsDeleteSame==true){//去重
+            QList<TSFileInfo> outTSFileInfoList;outTSFileInfoList.clear();
+            ClearSameData(tSFileInfoList,outTSFileInfoList);
+            //tSFileInfoList:原始数据 outTSFileInfoList 去重后数据
+            ExcelHandel excelHandel;
+            excelHandel.TSFileExportToExcelSeparate(exportFileName,ExportItem,outTSFileInfoList);
+        }else {
+            ExcelHandel excelHandel;
+            excelHandel.TSFileExportToExcelSeparate(exportFileName,ExportItem,tSFileInfoList);
+        }
 
         handleSuccessCount++;
         emit AppendPossessLog(QString(tr("-------处理结果【%1】------\n")).arg(handelResult));
@@ -578,17 +591,15 @@ void TsFileExportWin::HandelSummaryExportInfoList(QList<SummaryExportInfo> summa
         //这里去重掉
         //tSFileInfoList=tSFileInfoList.toSet().toList();
         QList<TSFileSummaryInfo> outTSFileInfoList;outTSFileInfoList.clear();
-        ClearSameData(tSFileSummaryInfoList,outTSFileInfoList);
-        //tSFileSummaryInfoList:原始数据 outTSFileInfoList 去重后数据
-
-        //        int tSFileInfoListSize=tSFileInfoList.size();
-        //        int outTSFileInfoListSize=outTSFileInfoList.size();
-        //        qDebug()<<"tSFileInfoListSize: "<<tSFileInfoListSize;
-        //        qDebug()<<"outTSFileInfoListSize: "<<outTSFileInfoListSize;
+        if(IsDeleteSame==true){//去重
+            ClearSameData(tSFileSummaryInfoList,outTSFileInfoList);
+            //tSFileSummaryInfoList:原始数据 outTSFileInfoList 去重后数据
+        }
 
         for (int tIndex=0;tIndex<tSFilePathListSize ;tIndex++ ) {//生成译文的
             QString tSFilePath= tSFilePathList.at(tIndex);
             QFileInfo fileInfo(tSFilePath);
+            QList<QString> translationList;translationList.clear();//不去重的
             if(fileInfo.fileName()==SourceFileName){
                 continue;
             }
@@ -611,13 +622,23 @@ void TsFileExportWin::HandelSummaryExportInfoList(QList<SummaryExportInfo> summa
             fileIn.close();
 
             QDomElement root = doc.documentElement();//读取根节点
-            ForEachTSFileSummaryTran(&root,outTSFileInfoList);
+            if(IsDeleteSame==true){
+                ForEachTSFileSummaryTran(&root,outTSFileInfoList);
+            }else {
+                ForEachTSFileSummaryTran(&root,translationList);
+                AppendTranslation(tSFileSummaryInfoList,translationList);
+            }
         }
         header<<QString(tr("注释 %1")).arg(SourceFileName);
         emit AppendPossessLog(QString(tr("-------处理译文结束---------")));
 
-        ExcelHandel excelHandel;
-        excelHandel.TSFileExportToExcelSummary(exportFileName,header,outTSFileInfoList);
+        if(IsDeleteSame==true){
+            ExcelHandel excelHandel;
+            excelHandel.TSFileExportToExcelSummary(exportFileName,header,outTSFileInfoList);
+        }else {
+            ExcelHandel excelHandel;
+            excelHandel.TSFileExportToExcelSummary(exportFileName,header,tSFileSummaryInfoList);
+        }
 
         handleSuccessCount++;
         emit AppendPossessLog(QString(tr("-------处理结果【%1】------\n")).arg(handelResult));
@@ -668,6 +689,26 @@ void TsFileExportWin::ForEachTSFileSummaryTran(QDomElement *root, QList<TSFileSu
         childEle=childEle.nextSiblingElement();
     }
 }
+
+void TsFileExportWin::ForEachTSFileSummaryTran(QDomElement *root, QList<QString> &translationList)
+{
+    QDomElement childEle= (*root).firstChildElement();
+    while (!childEle.isNull()){
+        QString tagName = childEle.toElement().tagName();
+        if (tagName.compare("source") == 0){//节点标记查找
+            //qDebug()<< childEle.text();//读取节点文本
+            QString source="",translation="";//,comment="";
+            source=childEle.text();
+            if(!childEle.nextSiblingElement().isNull())
+                translation=childEle.nextSiblingElement().text();
+            //            if(!childEle.nextSiblingElement().nextSiblingElement().isNull())
+            //                comment=childEle.nextSiblingElement().nextSiblingElement().text();
+            translationList.append(translation);
+        }
+        ForEachTSFileSummaryTran(&childEle,translationList);
+        childEle=childEle.nextSiblingElement();
+    }
+}
 /*
  * function:ClearSameData
  * 功能：清除QList中的相同项
@@ -690,6 +731,14 @@ void TsFileExportWin::AppendTranslation(QList<TSFileSummaryInfo> &tSFileSummaryI
             tSFileSummaryInfoList[index].TranslationList.append(translation);
             break;
         }
+    }
+}
+
+void TsFileExportWin::AppendTranslation(QList<TSFileSummaryInfo> &tSFileSummaryInfoList, const QList<QString> &translationList)
+{
+    int tSFileSummaryInfoListSize=tSFileSummaryInfoList.size();
+    for (int index=0;index<tSFileSummaryInfoListSize ;index++ ) {
+        tSFileSummaryInfoList[index].TranslationList.append(translationList.at(index));
     }
 }
 
@@ -825,6 +874,14 @@ void TsFileExportWin::CheckBoxClicked(bool checked)
     else if (CheckBox->objectName()=="checkBox_3") {
         ExportItem[2]=checked;
         DataOperate::Instance()->WriteIniFile(tr("TsFileExportWinGroup"),tr("ExportItem2"), QString::number(ExportItem[2]));
+    }
+    else if (CheckBox->objectName()=="checkBox_4") {
+        IsDeleteSame=checked;
+        DataOperate::Instance()->WriteIniFile(tr("TsFileExportWinGroup"),tr("IsDeleteSame"), QString::number(IsDeleteSame));
+        if(IsDeleteSame==true)
+            ui->checkBox_4->setText(tr("是"));
+        else
+            ui->checkBox_4->setText(tr("否"));
     }
 }
 
