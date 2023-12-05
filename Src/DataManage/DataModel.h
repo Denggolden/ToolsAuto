@@ -79,9 +79,10 @@ typedef struct TRTSFileInfo{
 
 typedef  struct TRListExportInfo{
     TRListExportInfo(){};
-    TRListExportInfo(QString source,QString translation){Source=source;Translation=translation;};
+    TRListExportInfo(QString source,QString translation,bool isFindSource){Source=source;Translation=translation;IsFindSource=isFindSource;};
     QString Source;
     QString Translation;
+    bool IsFindSource;
 }TRListExportInfo ;
 
 class DataModel

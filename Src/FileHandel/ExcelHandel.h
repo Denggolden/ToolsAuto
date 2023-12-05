@@ -17,9 +17,9 @@ public:
 
     void LoadTRListFile(QString tRListFilePath,QString languageType,QList<TSFileInfo> &TRFileInfoList);
 
-    void MergeTRListFile(const QString &newTRListFilePath,const QString &oldTRListFilePath);
+    void MergeTRListFile(const QString &newTRListFilePath,const QString &oldTRListFilePath,QString &mergeResult);
     void CreateTargetTranslationList(const QString &oldTRListFilePath,const QString &targetLang,QList<TRListExportInfo> &tRListExportInfoList);
-    QString FindTargetTranslation(const QString &source,const QList<TRListExportInfo> &tRListExportInfoList);
+    QString FindTargetTranslation(const QString &source,QList<TRListExportInfo> &tRListExportInfoList);
 };
 
 #endif // EXCELHANDEL_H

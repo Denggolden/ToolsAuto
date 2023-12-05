@@ -113,7 +113,7 @@ void ExcelHandel::LoadTRListFile(QString tRListFilePath, QString languageType, Q
     pXlsx=nullptr;
 }
 
-void ExcelHandel::MergeTRListFile(const QString &newTRListFilePath, const QString &oldTRListFilePath)
+void ExcelHandel::MergeTRListFile(const QString &newTRListFilePath, const QString &oldTRListFilePath,QString &mergeResult)
 {
     //读取翻译文件
     QXlsx::Document* pNewXlsx = nullptr;
@@ -131,6 +131,7 @@ void ExcelHandel::MergeTRListFile(const QString &newTRListFilePath, const QStrin
     for(int col=2;col<=colCount;col++){
         QString targetLang=pNewXlsx->read(1,col).toString().trimmed();
         QList<TRListExportInfo> tRListExportInfoList;tRListExportInfoList.clear();
+        QList<QString> sourceExcepList;sourceExcepList.clear();
         //拿到源文及目标译文
         //为了时间复杂度空间复杂度综合及开发效率目前这样处理比较稳妥
         CreateTargetTranslationList(oldTRListFilePath,targetLang,tRListExportInfoList);
@@ -138,8 +139,29 @@ void ExcelHandel::MergeTRListFile(const QString &newTRListFilePath, const QStrin
             //通过 源文 找到目标译文
             QString source=pNewXlsx->read(row,1).toString().trimmed();
             QString translation=FindTargetTranslation(source,tRListExportInfoList);
-            pNewXlsx->write(row,col,translation);
+            if(translation=="")
+                sourceExcepList.append(source);
+            else
+                pNewXlsx->write(row,col,translation);
         }
+
+        mergeResult+=QString(QObject::tr("---合并：%1 结果如下---\n")).arg(targetLang);
+
+        mergeResult+=QString(QObject::tr("【对于新文件】以下源文未找到对应译文\n"));
+        int sourceExcepListSize=sourceExcepList.size();
+        for(int index=0;index<sourceExcepListSize;index++){
+            mergeResult+=QString("%1\n").arg(sourceExcepList.at(index));
+        }
+
+        mergeResult+=QString(QObject::tr("【对于旧文件】以下译文未找到对应源文\n"));
+        int tRListExportInfoListSize=tRListExportInfoList.size();
+        for(int index=0;index<tRListExportInfoListSize;index++){
+            if(tRListExportInfoList.at(index).IsFindSource==false){
+                mergeResult+=QString(QObject::tr("源文：%1  译文：%2\n")).arg(tRListExportInfoList.at(index).Source).arg(tRListExportInfoList.at(index).Translation);
+            }
+        }
+
+        mergeResult+=QString(QObject::tr("---合并：%1 结果END---\n")).arg(targetLang);
     }
 
     pNewXlsx->save();
@@ -173,20 +195,21 @@ void ExcelHandel::CreateTargetTranslationList(const QString &oldTRListFilePath, 
     for(int row = 2; row <= rowCount; row++){// 遍历每一行
         QString source=pOldXlsx->read(row,1).toString().trimmed();
         QString translation=pOldXlsx->read(row,tRColIndex).toString().trimmed();
-        tRListExportInfoList.push_back(TRListExportInfo(source,translation));
+        tRListExportInfoList.push_back(TRListExportInfo(source,translation,false));
     }
 
     delete pOldXlsx;
     pOldXlsx=nullptr;
 }
 
-QString ExcelHandel::FindTargetTranslation(const QString &source, const QList<TRListExportInfo> &tRListExportInfoList)
+QString ExcelHandel::FindTargetTranslation(const QString &source,QList<TRListExportInfo> &tRListExportInfoList)
 {
     QString translation="";
     int tRListExportInfoListSize=tRListExportInfoList.size();
     for(int index=0;index<tRListExportInfoListSize;index++){
         if(tRListExportInfoList.at(index).Source==source){
             translation=tRListExportInfoList.at(index).Translation;
+            tRListExportInfoList[index].IsFindSource=true;
             break;
         }
     }

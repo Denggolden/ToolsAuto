@@ -12,6 +12,7 @@
 #include <QDomDocument>
 #include "Src/FileHandel/ExcelHandel.h"
 #include <thread>
+#include <QTextCursor>
 
 TsFileTranslateWin::TsFileTranslateWin(QWidget *parent) :
     WidgetBase(parent),
@@ -87,6 +88,8 @@ void TsFileTranslateWin::InitTextEdit()
     QFont font = QFont("Microsoft YaHei",8,QFont::Bold,false);
     ui->textEdit->setFont(font);
     ui->textEdit_2->setFont(font);
+
+    connect(ui->textEdit_2,static_cast<void (QTextEdit::*)()>(&QTextEdit::cursorPositionChanged), this,&TsFileTranslateWin::TextEditCursorPositionChangedSlots);
 }
 
 void TsFileTranslateWin::InitToolButton()
@@ -328,9 +331,11 @@ void TsFileTranslateWin::MergeTRListFileFun()
     emit AppendPossessLog(tr("-------开始处理------"),"textEdit_2");
     emit AppendPossessLog(QString(tr("-------正在处理 当前第：%1项 共：%2项------\n")).arg(1).arg(1)+NewTRListFilePath+"\n","textEdit_2");
     emit AppendPossessLog(QString(tr("-------从：%1\n处理至------\n%2")).arg(OldTRListFilePath).arg(NewTRListFilePath),"textEdit_2");
+    QString mergeResult="";
     ExcelHandel excelHandel;
-    excelHandel.MergeTRListFile(NewTRListFilePath,OldTRListFilePath);
+    excelHandel.MergeTRListFile(NewTRListFilePath,OldTRListFilePath,mergeResult);
     emit AppendPossessLog(QString(tr("-------处理结果【%1】------\n")).arg(tr("成功")),"textEdit_2");
+    emit AppendPossessLog(QString(tr("-------处理结果【详情】如下------\n%1\n")).arg(mergeResult),"textEdit_2");
     emit AppendPossessLog(tr("-------处理完成------\n"),"textEdit_2");
     emit AppendPossessLog(QString(tr("-------总计：%1项    成功：%2项    失败：%3项------\n")).arg(1).arg(1).arg(0),"textEdit_2");
     emit CtrlSetEnabled(tr("MergeTRListFileTBtn"),tr("合并翻译清单文件"),true);
@@ -472,7 +477,9 @@ void TsFileTranslateWin::ToolButtonClicked(bool checked)
         ui->textEdit_2->clear();
         ui->MergeTRListFileTBtn->setText(tr("处理中..."));
         ui->MergeTRListFileTBtn->setEnabled(false);
-        MergeTRListFileFun();
+        //MergeTRListFileFun();
+        std::thread t(&TsFileTranslateWin::MergeTRListFileFun,this); //使用类成员函数，并传入类指针
+        t.detach();
     }
 }
 
@@ -528,4 +535,13 @@ void TsFileTranslateWin::AppendPossessLogSlots(const QString &logStr,QString txt
         ui->textEdit->append(logStr);
     else if (txtEditName=="textEdit_2")
         ui->textEdit_2->append(logStr);
+}
+
+void TsFileTranslateWin::TextEditCursorPositionChangedSlots()
+{
+//    const QTextCursor cursor = ui->textEdit_2->textCursor();
+//    int ColNum = cursor.columnNumber();
+//    int RowNum = cursor.blockNumber();
+
+//    qDebug()<<QString("ColNum: %1    RowNum: %2").arg(ColNum).arg(RowNum);
 }

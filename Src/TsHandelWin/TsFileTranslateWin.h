@@ -76,6 +76,7 @@ public slots:
     void CheckBoxClicked(bool checked);
     void CtrlSetEnabledSlots(const QString &ctrlName,const QString &txtStr,bool isEnabled);
     void AppendPossessLogSlots(const QString &logStr,QString txtEditName);
+    void TextEditCursorPositionChangedSlots();
 };
 
 #endif // TSFILETRANSLATEWIN_H
