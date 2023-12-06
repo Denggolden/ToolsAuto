@@ -36,7 +36,7 @@ typedef struct TSFileInfo{
 
 typedef struct TSFileSummaryInfo{
     TSFileSummaryInfo(){};
-    TSFileSummaryInfo(QString source,QList<QString> translationList,QString comment){Source=source;TranslationList=translationList;Comment=comment;};
+    TSFileSummaryInfo(QString source,QList<QString> translationList,QString comment,bool isFindTranslation){Source=source;TranslationList=translationList;Comment=comment;IsFindTranslation=isFindTranslation;};
     bool operator == (const TSFileSummaryInfo &a) const
     {
         return (Source==a.Source);
@@ -46,6 +46,7 @@ typedef struct TSFileSummaryInfo{
     QString Source;
     QList<QString> TranslationList;
     QString Comment;
+    bool IsFindTranslation;
 }TSFileSummaryInfo;
 
 typedef struct SummaryExportInfo{

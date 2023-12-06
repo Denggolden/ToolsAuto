@@ -14,6 +14,9 @@
 #include "Src/TsHandelWin/TsFileTranslateWin.h"
 #include "Src/TsHandelWin/QMFileGenerateWin.h"
 
+#include "Src/FileConvertWin/FileConvertMainWin.h"
+#include "Src/FileConvertWin/JsonHandelWin.h"
+
 ReflexObject ReflexObject::Ins;
 
 void ReflexObject::AddObjectIns(QObject *pObject)
@@ -74,6 +77,9 @@ void ReflexObject::InitObjectIns()
     CreateWin(TsFileExportWin,TsFileExportWin);
     CreateWin(TsFileTranslateWin,TsFileTranslateWin);
     CreateWin(QMFileGenerateWin,QMFileGenerateWin);
+    //软件主体-文件转换
+    CreateWin(FileConvertMainWin,FileConvertMainWin);
+    CreateWin(JsonHandelWin,JsonHandelWin);
 
     InitClassObj();
 }

@@ -11,6 +11,7 @@ class TitleBarWin;
 class StatusBarWin;
 
 class TsHandelMainWin;
+class FileConvertMainWin;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWin; }
@@ -35,6 +36,7 @@ private:
     StatusBarWin *pStatusBarWin=nullptr;
 
     TsHandelMainWin *pTsHandelMainWin=nullptr;
+    FileConvertMainWin *pFileConvertMainWin=nullptr;
 
 protected:
     void InitClass() override;

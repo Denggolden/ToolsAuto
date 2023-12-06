@@ -79,6 +79,7 @@ public:
     void ClearSameData(const QList<TSFileSummaryInfo> &srcTSFileSummaryInfoList,QList<TSFileSummaryInfo> &outTSFileSummaryInfoList);
     void AppendTranslation(QList<TSFileSummaryInfo> &tSFileSummaryInfoList,const QString &source,const QString &translation);
     void AppendTranslation(QList<TSFileSummaryInfo> &tSFileSummaryInfoList,const QList<QString> &translationList);
+    void ResetTSFileSummaryInfoListTRFindStatus(QList<TSFileSummaryInfo> &tSFileSummaryInfoList);
 
 //    void CreateFalgEnableList(QTreeWidgetItem *item);
 //    void FoEachItemOfChileItem(QTreeWidgetItem *item);

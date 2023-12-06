@@ -71,7 +71,8 @@ void ExcelHandel::TSFileExportToExcelSummary(QString exportFileName, QStringList
         QList<QString> translationList= tSFileSummaryInfoList.at(index).TranslationList;
         int translationListSize=translationList.size();
         for(int tIndex=0;tIndex<translationListSize;tIndex++){
-            pXlsx.write(row,2+tIndex,translationList.at(tIndex));
+            //pXlsx.write(row,2+tIndex,translationList.at(tIndex));//实际的译文
+            pXlsx.write(row,2+tIndex,header[tIndex+1].replace(".ts","",Qt::CaseInsensitive)+"@"+tSFileSummaryInfoList.at(index).Source);
         }
         pXlsx.write(row,2+translationListSize,tSFileSummaryInfoList.at(index).Comment);
     }

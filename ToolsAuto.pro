@@ -22,6 +22,8 @@ include($$PWD/Src/StyleCtrl/StyleCtrl.pri)
 include($$PWD/Src/FileHandel/FileHandel.pri)
 include($$PWD/Src/DataManage/DataManage.pri)
 include($$PWD/Src/TsHandelWin/TsHandelWin.pri)
+include($$PWD/Src/Common/Common.pri)
+include($$PWD/Src/FileConvertWin/FileConvertWin.pri)
 
 #第三方库
 include($$PWD/ThirdLib/ThirdLib.pri)

@@ -22,6 +22,9 @@ class TsFileExportWin;
 class TsFileTranslateWin;
 class QMFileGenerateWin;
 
+class FileConvertMainWin;
+class JsonHandelWin;
+
 class MainWin;
 
 class ReflexObject
@@ -47,6 +50,9 @@ private:
     TsFileExportWin *pTsFileExportWin=nullptr;
     TsFileTranslateWin *pTsFileTranslateWin=nullptr;
     QMFileGenerateWin *pQMFileGenerateWin=nullptr;
+
+    FileConvertMainWin *pFileConvertMainWin=nullptr;
+    JsonHandelWin *pJsonHandelWin=nullptr;
 
     MainWin *pMainWin=nullptr;
 

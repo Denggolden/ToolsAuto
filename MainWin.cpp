@@ -14,9 +14,13 @@
 #include <QPixmap>
 
 #include "Src/Common/ReflexObject.h"
-#include "Src/StyleCtrl/TitleBarWin.h"
 #include "Src/DataManage/DataOperate.h"
+
+#include "Src/StyleCtrl/TitleBarWin.h"
+
 #include "Src/TsHandelWin/TsHandelMainWin.h"
+#include "Src/FileConvertWin/FileConvertMainWin.h"
+
 #include "Src/StyleCtrl/StatusBarWin.h"
 
 #include <QDesktopWidget>
@@ -66,7 +70,7 @@ void MainWin::InitListWidget()
     pListWidget->setFont(QFont("Microsoft YaHei", 12, QFont::Bold));
 
     QStringList listName;listName.clear();
-    listName<<tr("Qt翻译自动化")<<tr("待定");
+    listName<<tr("Qt翻译自动化")<<tr("文件处理");
     pListWidget->addItems(listName);
 
     connect(pListWidget,&QListWidget::currentRowChanged,this,&MainWin::CurrentRowChangedSlots);
@@ -77,8 +81,10 @@ void MainWin::InitStackedWidget()
     pStackedWidget=new QStackedWidget();
 
     pTsHandelMainWin= dynamic_cast<TsHandelMainWin*>(ReflexObject::Instance()->GetObjectIns("TsHandelMainWin"));
+    pFileConvertMainWin= dynamic_cast<FileConvertMainWin*>(ReflexObject::Instance()->GetObjectIns("FileConvertMainWin"));
 
     pStackedWidget->addWidget(pTsHandelMainWin);
+    pStackedWidget->addWidget(pFileConvertMainWin);
 }
 
 void MainWin::InitWinCtrl()
@@ -107,6 +113,9 @@ void MainWin::CurrentRowChangedSlots(int curRow)
     qDebug()<<curRow<<"   "<<pListWidget->currentItem()->text();
     if(curRow==0){
         pStackedWidget->setCurrentWidget(pTsHandelMainWin);
+    }
+    else if(curRow==1){
+        pStackedWidget->setCurrentWidget(pFileConvertMainWin);
     }
 }
 

@@ -624,6 +624,7 @@ void TsFileExportWin::HandelSummaryExportInfoList(QList<SummaryExportInfo> summa
             QDomElement root = doc.documentElement();//读取根节点
             if(IsDeleteSame==true){
                 ForEachTSFileSummaryTran(&root,outTSFileInfoList);
+                ResetTSFileSummaryInfoListTRFindStatus(outTSFileInfoList);
             }else {
                 ForEachTSFileSummaryTran(&root,translationList);
                 AppendTranslation(tSFileSummaryInfoList,translationList);
@@ -656,13 +657,16 @@ void TsFileExportWin::ForEachTSFileSummarySource(QDomElement *root, QList<TSFile
         if (tagName.compare("source") == 0){//节点标记查找
             //qDebug()<< childEle.text();//读取节点文本
             QString source="",/*translation="",*/comment="";
-            QList<QString> translationList;translationList.clear();
             source=childEle.text();
-            //            if(!childEle.nextSiblingElement().isNull())
-            //                translation=childEle.nextSiblingElement().text();
-            if(!childEle.nextSiblingElement().nextSiblingElement().isNull())
-                comment=childEle.nextSiblingElement().nextSiblingElement().text();
-            tSFileSummaryInfoList.append(TSFileSummaryInfo(source,translationList,comment));
+            bool ret = source.contains(QRegExp("[\\x4e00-\\x9fa5]+")); //使用正则表达式判断是否包含中文字符
+            if(ret) {//存在中文
+                QList<QString> translationList;translationList.clear();
+                //            if(!childEle.nextSiblingElement().isNull())
+                //                translation=childEle.nextSiblingElement().text();
+                if(!childEle.nextSiblingElement().nextSiblingElement().isNull())
+                    comment=childEle.nextSiblingElement().nextSiblingElement().text();
+                tSFileSummaryInfoList.append(TSFileSummaryInfo(source,translationList,comment,false));
+            }
         }
         ForEachTSFileSummarySource(&childEle,tSFileSummaryInfoList);
         childEle=childEle.nextSiblingElement();
@@ -726,9 +730,10 @@ void TsFileExportWin::AppendTranslation(QList<TSFileSummaryInfo> &tSFileSummaryI
 {
     int tSFileSummaryInfoListSize=tSFileSummaryInfoList.size();
     for (int index=0;index<tSFileSummaryInfoListSize ;index++ ) {
-        if(tSFileSummaryInfoList.at(index).Source==source){
+        if(tSFileSummaryInfoList.at(index).Source==source&&tSFileSummaryInfoList.at(index).IsFindTranslation==false){
             //tSFileInfoList[index].Translation+=""+translation;
             tSFileSummaryInfoList[index].TranslationList.append(translation);
+            tSFileSummaryInfoList[index].IsFindTranslation=true;
             break;
         }
     }
@@ -739,6 +744,14 @@ void TsFileExportWin::AppendTranslation(QList<TSFileSummaryInfo> &tSFileSummaryI
     int tSFileSummaryInfoListSize=tSFileSummaryInfoList.size();
     for (int index=0;index<tSFileSummaryInfoListSize ;index++ ) {
         tSFileSummaryInfoList[index].TranslationList.append(translationList.at(index));
+    }
+}
+
+void TsFileExportWin::ResetTSFileSummaryInfoListTRFindStatus(QList<TSFileSummaryInfo> &tSFileSummaryInfoList)
+{
+    int tSFileSummaryInfoListSize=tSFileSummaryInfoList.size();
+    for (int index=0;index<tSFileSummaryInfoListSize ;index++ ) {
+        tSFileSummaryInfoList[index].IsFindTranslation=false;
     }
 }
 
