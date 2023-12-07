@@ -29,8 +29,10 @@ JsonHandelWin::~JsonHandelWin()
 
 void JsonHandelWin::InitClass()
 {
-    ForEachTSFile();
+    //ForEachTSFile();
     //CreateJson();
+    //ForEachJsonFile();
+    ModifyJsonFile();
 }
 
 void JsonHandelWin::CreateJson()
@@ -58,10 +60,10 @@ void JsonHandelWin::CreateJson()
     rootObject.insert("name", "老王");
     rootObject.insert("age", 26);
     //rootObject.insert("interest", interestObj);
-    FoTest1(&rootObject);
+    //FoTest1(&rootObject);
     //FoTest1(&rootObject);
     //rootObject.insert("color", colorArray);
-    FoTest2(&rootObject);
+    //FoTest2(&rootObject);
     //FoTest2(&rootObject);
     rootObject.insert("vip", true);
     rootObject.insert("address", QJsonValue::Null);
@@ -85,47 +87,19 @@ void JsonHandelWin::CreateJson()
     file.close();
 }
 
-void JsonHandelWin::FoTest1(QJsonObject *rootObj)
-{
-    //    // 定义 { } 对象
-    //    QJsonObject interestObj;
-    //    // 插入元素，对应键值对
-    //    interestObj.insert(QString("basketball%1").arg(no1), "篮球");
-    //    interestObj.insert(QString("badminton%1").arg(no1), "羽毛球");
-
-    ////    if(no1==0){
-    ////        no1=1;
-    ////        FoTest1(&interestObj);
-    ////        qDebug()<<"FoTest1(&interestObj);";
-    ////        rootObj->insert(QString("interest%1").arg(no1), interestObj);
-    ////    }else {
-    ////        rootObj->insert(QString("interest%1").arg(no1), interestObj);
-    ////    }
-}
-
-void JsonHandelWin::FoTest2(QJsonObject *rootObj)
-{
-    // 定义 [ ] 对象
-    QJsonArray colorArray;
-    // 往数组中添加元素
-    colorArray.append("black");
-    colorArray.append("white");
-    rootObj->insert("color", colorArray);
-}
-
 void JsonHandelWin::ForEachTSFile()
 {
-    QString path="C:/Users/admin/Desktop/C6000Pre/language/TsFileCreate/mingw73_32";
+    QString path="path";
     // 打开文件
     QFile fileIn(path+"/CN.ts");
     if (!fileIn.open(QFileDevice::ReadOnly)) {
-        QMessageBox::information(NULL, "提示", "文件打开失败！");
+        QMessageBox::information(NULL, tr("提示"), tr("文件打开失败！"));
         return;
     }
 
     QDomDocument doc;
     if (!doc.setContent(&fileIn)) {
-        QMessageBox::information(NULL, "提示", "操作的文件不是XML文件！");
+        QMessageBox::information(NULL, tr("提示"), tr("操作的文件不是XML文件！"));
         fileIn.close();
         return;
     }
@@ -184,5 +158,165 @@ void JsonHandelWin::ForEachTSFile(QDomElement *root,QJsonObject *rootObj)
 
         rootObj->insert(QString("%1%2").arg(tagName).arg(no),chileObj);
         childEle=childEle.nextSiblingElement();
+    }
+}
+
+void JsonHandelWin::ForEachJsonFile()
+{
+    QFile file("JsonFile.json");
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        qDebug() << "can't open error!";
+        return;
+    }
+
+    // 读取文件的全部内容
+    QTextStream stream(&file);
+    stream.setCodec("UTF-8");		// 设置读取编码是UTF8
+    QString str = stream.readAll();
+
+    file.close();
+
+    // QJsonParseError类用于在JSON解析期间报告错误。
+    QJsonParseError jsonError;
+    // 将json解析为UTF-8编码的json文档，并从中创建一个QJsonDocument。
+    // 如果解析成功，返回QJsonDocument对象，否则返回null
+    QJsonDocument doc = QJsonDocument::fromJson(str.toUtf8(), &jsonError);
+    // 判断是否解析失败
+    if (jsonError.error != QJsonParseError::NoError && !doc.isNull()) {
+        qDebug() << tr("Json格式错误！") << jsonError.error;
+        return;
+    }
+
+    QJsonObject rootObj = doc.object();
+
+    ForEachJsonFile(&rootObj);
+}
+
+void JsonHandelWin::ForEachJsonFile(QJsonObject *rootObj)
+{
+    for(QJsonObject::Iterator it=(*rootObj).begin();it!=(*rootObj).end();it++){
+        //QString value=it.value().toString();
+        QString key=it.key();
+        qDebug()<<"key: "<<key;
+        QJsonValue value= it.value();
+        //QJsonValue value= (*rootObj).value(key);  // 获取指定 key 对应的 value
+        if(value.isArray()){//处理 Array  就差遍历json数组了
+        }
+        else if(value.isBool()){
+            bool b=value.toBool();
+            qDebug()<<QString("type: %1  value: %2").arg("Bool").arg(b);
+        }
+        else if (value.isDouble()){
+            double d=value.toDouble();
+            qDebug()<<QString("type: %1  value: %2").arg("Double").arg(d);
+        }
+        else if (value.isNull()){
+            qDebug()<<QString("type: %1  value: %2").arg("Null").arg("Null");
+        }
+        else if (value.isObject()){//处理 Object
+            QJsonObject obj=value.toObject();
+            ForEachJsonFile(&obj);
+        }
+        else if (value.isString()){
+            QString str=value.toString();
+            qDebug()<<QString("type: %1  value: %2").arg("String").arg(str);
+        }
+        else if (value.isUndefined()){
+            qDebug()<<QString("type: %1  value: %2").arg("Undefined").arg("Undefined");
+        }
+    }
+}
+
+void JsonHandelWin::ModifyJsonFile()
+{
+    QFile file("JsonFile.json");
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        qDebug() << "can't open error!";
+        return;
+    }
+
+    // 读取文件的全部内容
+    QTextStream stream(&file);
+    stream.setCodec("UTF-8");		// 设置读取编码是UTF8
+    QString str = stream.readAll();
+
+    file.close();
+
+    // QJsonParseError类用于在JSON解析期间报告错误。
+    QJsonParseError jsonError;
+    // 将json解析为UTF-8编码的json文档，并从中创建一个QJsonDocument。
+    // 如果解析成功，返回QJsonDocument对象，否则返回null
+    QJsonDocument doc = QJsonDocument::fromJson(str.toUtf8(), &jsonError);
+    // 判断是否解析失败
+    if (jsonError.error != QJsonParseError::NoError && !doc.isNull()) {
+        qDebug() << tr("Json格式错误！") << jsonError.error;
+        return;
+    }
+
+    QJsonObject rootObj = doc.object();
+
+    ModifyJsonFile(&rootObj);
+
+    // 将object设置为本文档的主要对象
+    QJsonDocument docOut;
+    docOut.setObject(rootObj);
+
+    // 重写打开文件，覆盖原有文件，达到删除文件全部内容的效果
+    QFile writeFile("JsonFileOut.json");
+    if (!writeFile.open(QFile::WriteOnly | QFile::Truncate)) {
+        qDebug() << "can't open error!";
+        return;
+    }
+
+    // 将修改后的内容写入文件
+    QTextStream wirteStream(&writeFile);
+    wirteStream.setCodec("UTF-8");		// 设置读取编码是UTF8
+    wirteStream << docOut.toJson();		// 写入文件
+    writeFile.close();					// 关闭文件
+
+}
+
+void JsonHandelWin::ModifyJsonFile(QJsonObject *rootObj)
+{
+    for(QJsonObject::Iterator it=rootObj->begin();it!=rootObj->end();it++){
+        //QString value=it.value().toString();
+        QString key=it.key();
+        qDebug()<<"key: "<<key;
+        QJsonValue value= it.value();
+        //QJsonValue value= (*rootObj).value(key);  // 获取指定 key 对应的 value
+        if(value.isArray()){//处理 Array  就差遍历json数组了
+        }
+        else if(value.isBool()){
+            bool b=value.toBool();
+            qDebug()<<QString("type: %1  value: %2").arg("Bool").arg(b);
+        }
+        else if (value.isDouble()){
+            double d=value.toDouble();
+            qDebug()<<QString("type: %1  value: %2").arg("Double").arg(d);
+        }
+        else if (value.isNull()){
+            qDebug()<<QString("type: %1  value: %2").arg("Null").arg("Null");
+        }
+        else if (value.isObject()){//处理 Object
+            QJsonObject obj=value.toObject();
+            ForEachJsonFile(&obj);
+        }
+        else if (value.isString()){
+            QString str=value.toString();
+            qDebug()<<QString("type: %1  value: %2").arg("String").arg(str);
+            //            QJsonValueRef valueRef=it.value();
+            //            QJsonObject obj = valueRef.toObject();
+            //            obj[key]="www.baidu.com";
+            //            valueRef=obj;
+
+
+            //            QJsonObject A_obj=(*rootObj).value(key).toObject();
+            //            A_obj["AA"]=33;
+            (*rootObj)[key]="www.baidu.com";
+            //it.value()="baiduCom";
+        }
+        else if (value.isUndefined()){
+            qDebug()<<QString("type: %1  value: %2").arg("Undefined").arg("Undefined");
+        }
     }
 }

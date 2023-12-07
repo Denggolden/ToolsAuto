@@ -219,6 +219,7 @@ void TsFileExportWin::GetCreateTSFileName()
 
     QStringList tsFileNameList;tsFileNameList.clear();
     GetCreateTSFileName(tsFileDir,tsFileNameList);
+    ui->comboBox_2->clear();
     ui->comboBox_2->addItems(tsFileNameList);
 }
 

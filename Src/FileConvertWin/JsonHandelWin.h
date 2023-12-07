@@ -27,11 +27,14 @@ protected:
 public:
     void CreateJson();
 
-    void FoTest1(QJsonObject *rootObj);
-    void FoTest2(QJsonObject *rootObj);
-
     void ForEachTSFile();
     void ForEachTSFile(QDomElement *root,QJsonObject *rootObj);
+
+    void ForEachJsonFile();
+    void ForEachJsonFile(QJsonObject *rootObj);
+
+    void ModifyJsonFile();
+    void ModifyJsonFile(QJsonObject *rootObj);
 };
 
 #endif // JSONHANDELWIN_H
