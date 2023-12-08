@@ -32,7 +32,7 @@ void JsonHandelWin::InitClass()
     //ForEachTSFile();
     //CreateJson();
     //ForEachJsonFile();
-    ModifyJsonFile();
+    //ModifyJsonFile();
 }
 
 void JsonHandelWin::CreateJson()
