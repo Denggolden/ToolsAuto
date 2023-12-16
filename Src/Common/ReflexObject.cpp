@@ -17,6 +17,10 @@
 #include "Src/FileConvertWin/FileConvertMainWin.h"
 #include "Src/FileConvertWin/JsonHandelWin.h"
 
+#include "Src/DataModelEditWin/DataModelEditMainWin.h"
+#include "Src/DataModelEditWin/ModelEditWin.h"
+#include "Src/DataModelEditWin/DataEditWin.h"
+
 ReflexObject ReflexObject::Ins;
 
 void ReflexObject::AddObjectIns(QObject *pObject)
@@ -80,6 +84,10 @@ void ReflexObject::InitObjectIns()
     //软件主体-文件转换
     CreateWin(FileConvertMainWin,FileConvertMainWin);
     CreateWin(JsonHandelWin,JsonHandelWin);
+    //软件主体-数据模型编辑
+    CreateWin(DataModelEditMainWin,DataModelEditMainWin);
+    CreateWin(ModelEditWin,ModelEditWin);
+    CreateWin(DataEditWin,DataEditWin);
 
     InitClassObj();
 }

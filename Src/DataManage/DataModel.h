@@ -86,6 +86,31 @@ typedef  struct TRListExportInfo{
     bool IsFindSource;
 }TRListExportInfo ;
 
+
+typedef struct ModListInfo{
+    ModListInfo(){};
+    ModListInfo(QString modName,QString modFieldCount,int dataIDCount,QList<QString> fieldList){ModName=modName;ModFieldCount=modFieldCount;DataIDCount=dataIDCount;FieldList=fieldList;};
+    QString ModName;
+    QString ModFieldCount;
+    int DataIDCount;
+    QList<QString> FieldList;
+}ModListInfo;
+
+typedef struct ModDataInfo{
+    ModDataInfo(){};
+    ModDataInfo(QString modName,int iDCount,QList<QString> modData){ModName=modName;IDCount=iDCount;ModData=modData;};
+    QString ModName;
+    int IDCount;
+    QList<QString> ModData;
+}ModDataInfo;
+
+typedef struct FieldKeyReplaceInfo{
+    FieldKeyReplaceInfo(){};
+    FieldKeyReplaceInfo(QString oldFieldKey,QString newFieldKey){OldFieldKey=oldFieldKey;NewFieldKey=newFieldKey;};
+    QString OldFieldKey;
+    QString NewFieldKey;
+}FieldKeyReplaceInfo ;
+
 class DataModel
 {
     //Q_OBJECT

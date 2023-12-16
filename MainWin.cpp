@@ -20,6 +20,7 @@
 
 #include "Src/TsHandelWin/TsHandelMainWin.h"
 #include "Src/FileConvertWin/FileConvertMainWin.h"
+#include "Src/DataModelEditWin/DataModelEditMainWin.h"
 
 #include "Src/StyleCtrl/StatusBarWin.h"
 
@@ -70,7 +71,7 @@ void MainWin::InitListWidget()
     pListWidget->setFont(QFont("Microsoft YaHei", 12, QFont::Bold));
 
     QStringList listName;listName.clear();
-    listName<<tr("Qt翻译自动化")<<tr("文件处理");
+    listName<<tr("Qt翻译自动化")<<tr("文件处理")<<tr("数据模型编辑");
     pListWidget->addItems(listName);
 
     connect(pListWidget,&QListWidget::currentRowChanged,this,&MainWin::CurrentRowChangedSlots);
@@ -82,9 +83,11 @@ void MainWin::InitStackedWidget()
 
     pTsHandelMainWin= dynamic_cast<TsHandelMainWin*>(ReflexObject::Instance()->GetObjectIns("TsHandelMainWin"));
     pFileConvertMainWin= dynamic_cast<FileConvertMainWin*>(ReflexObject::Instance()->GetObjectIns("FileConvertMainWin"));
+    pDataModelEditMainWin= dynamic_cast<DataModelEditMainWin*>(ReflexObject::Instance()->GetObjectIns("DataModelEditMainWin"));
 
     pStackedWidget->addWidget(pTsHandelMainWin);
     pStackedWidget->addWidget(pFileConvertMainWin);
+    pStackedWidget->addWidget(pDataModelEditMainWin);
 }
 
 void MainWin::InitWinCtrl()
@@ -116,6 +119,9 @@ void MainWin::CurrentRowChangedSlots(int curRow)
     }
     else if(curRow==1){
         pStackedWidget->setCurrentWidget(pFileConvertMainWin);
+    }
+    else if(curRow==2){
+        pStackedWidget->setCurrentWidget(pDataModelEditMainWin);
     }
 }
 

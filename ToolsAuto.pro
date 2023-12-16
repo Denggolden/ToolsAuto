@@ -24,6 +24,7 @@ include($$PWD/Src/DataManage/DataManage.pri)
 include($$PWD/Src/TsHandelWin/TsHandelWin.pri)
 include($$PWD/Src/Common/Common.pri)
 include($$PWD/Src/FileConvertWin/FileConvertWin.pri)
+include($$PWD/Src/DataModelEditWin/DataModelEditWin.pri)
 
 #第三方库
 include($$PWD/ThirdLib/ThirdLib.pri)

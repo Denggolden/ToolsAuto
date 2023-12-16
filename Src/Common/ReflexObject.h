@@ -25,6 +25,10 @@ class QMFileGenerateWin;
 class FileConvertMainWin;
 class JsonHandelWin;
 
+class DataModelEditMainWin;
+class ModelEditWin;
+class DataEditWin;
+
 class MainWin;
 
 class ReflexObject
@@ -53,6 +57,10 @@ private:
 
     FileConvertMainWin *pFileConvertMainWin=nullptr;
     JsonHandelWin *pJsonHandelWin=nullptr;
+
+    DataModelEditMainWin *pDataModelEditMainWin=nullptr;
+    ModelEditWin *pModelEditWin=nullptr;
+    DataEditWin *pDataEditWin=nullptr;
 
     MainWin *pMainWin=nullptr;
 
