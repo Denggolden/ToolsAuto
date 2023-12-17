@@ -107,7 +107,8 @@ void DataEditWin::InitTableWidget(QTableWidget *tableWidget, int flag)
     if(flag==1)
         tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     else if (flag==2)
-        tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+        tableWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    //tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     tableWidget->verticalHeader()->setVisible(false);  //隐藏垂直表头
     //tableWidget->horizontalHeader()->setVisible(false);  //隐藏水平表头
     tableWidget->setAlternatingRowColors(true); // 隔行变色
@@ -137,6 +138,32 @@ void DataEditWin::InitTableWidget(QTableWidget *tableWidget, int flag)
                 ui->tableWidget_2->item(previousRow,Col+1)->setText(dataTxt);
             }
         }
+    });
+
+    //需要抬起  只能鼠标左键
+    //    connect(tableWidget,static_cast<void (QTableWidget::*)(int,int)>(&QTableWidget::cellClicked), this,[this](int row, int column){
+    //        QTableWidget *TableWidget = qobject_cast<QTableWidget*>(sender());
+    //        if(TableWidget==ui->tableWidget)
+    //            return;
+    //        CopyCellRowIndex=row;
+    //        CopyCellColIndex=column;
+    //        qDebug()<<"row: "<<row;qDebug()<<"column: "<<column;
+    //    });
+
+    //按下就行  鼠标左右键都能捕获
+    connect(tableWidget,static_cast<void (QTableWidget::*)(int,int)>(&QTableWidget::cellPressed), this,[this](int row, int column){
+        QTableWidget *TableWidget = qobject_cast<QTableWidget*>(sender());
+        if(TableWidget==ui->tableWidget){
+            CopyDisRowIndex=row;
+            CopyDisColIndex=column;
+        }
+        if(TableWidget==ui->tableWidget_2){
+            CopySrcRowIndex=row;
+            CopySrcColIndex=column;
+        }
+
+        //        qDebug()<<"cellPressed";
+        //        qDebug()<<"row: "<<row;qDebug()<<"column: "<<column;
     });
 }
 
@@ -494,17 +521,22 @@ void DataEditWin::PoptableWidget1Menu()
     QMenu *pMenu = new QMenu(this);
     QAction *pPasteData = new QAction(tr("粘贴数据"), this);
     QAction *pAddData = new QAction(tr("添加数据"), this);
+    QAction *pResetData = new QAction(tr("重置数据"), this);
 
     pPasteData->setObjectName("PasteData");
     pAddData->setObjectName("AddData");
+    pResetData->setObjectName("ResetData");
 
     pMenu->addAction(pPasteData);
     pMenu->addSeparator();
     pMenu->addAction(pAddData);
+    pMenu->addSeparator();
+    pMenu->addAction(pResetData);
 
     //连接鼠标右键点击信号
     connect(pPasteData, &QAction::triggered, this, &DataEditWin::OnClickedPopMenu);
     connect(pAddData, &QAction::triggered, this, &DataEditWin::OnClickedPopMenu);
+    connect(pResetData, &QAction::triggered, this, &DataEditWin::OnClickedPopMenu);
 
     //在鼠标右键点击的地方显示菜单
     pMenu->exec(cursor().pos());
@@ -522,19 +554,24 @@ void DataEditWin::PoptableWidget2Menu()
     QMenu *pMenu = new QMenu(this);
     QAction *pDeleteData = new QAction(tr("删除数据"), this);
     QAction *pModifyData = new QAction(tr("修改数据"), this);
+    QAction *pCopyData = new QAction(tr("复制数据"), this);
 
     pDeleteData->setObjectName("DeleteData");
     pModifyData->setObjectName("ModifyData");
+    pCopyData->setObjectName("CopyData");
 
     //把QAction对象添加到菜单上
     pMenu->addAction(pDeleteData);
     //添加分隔线
     pMenu->addSeparator();
     pMenu->addAction(pModifyData);
+    pMenu->addSeparator();
+    pMenu->addAction(pCopyData);
 
     //连接鼠标右键点击信号
     connect(pDeleteData, &QAction::triggered, this, &DataEditWin::OnClickedPopMenu);
     connect(pModifyData, &QAction::triggered, this, &DataEditWin::OnClickedPopMenu);
+    connect(pCopyData, &QAction::triggered, this, &DataEditWin::OnClickedPopMenu);
 
     //在鼠标右键点击的地方显示菜单
     pMenu->exec(cursor().pos());
@@ -566,9 +603,10 @@ void DataEditWin::AddDataFun()
 
 void DataEditWin::PasteDataFun()
 {
+    //复制逻辑 粘贴逻辑 具体如何待定
     QClipboard *clipboard = QApplication::clipboard();   //获取系统剪贴板指针
     QString originalText  = clipboard->text();            //获取剪贴板上文本信息
-    QString txt=QString(originalText.replace("\n",""));
+    QString txt=QString(originalText.replace("\n",""));//originalText.replace("\n","") 有问题待定
     qDebug()<<"txt: "<<txt;
     QStringList srcLIST=txt.split("\t");
     QList<QString> outLIST;outLIST.clear();
@@ -578,11 +616,23 @@ void DataEditWin::PasteDataFun()
         if(srcLIST[index].trimmed()!="")
             outLIST.append(srcLIST[index]);
     }
+    int colCount=ui->tableWidget->columnCount();
     int outLISTSize=outLIST.size();
     //int colCount=ui->tableWidget->columnCount();
     //这里或许需要比较 outLISTSize 与 colCount 关键是 originalText格式是否标准
     for (int Col=0;Col< outLISTSize;Col++ ) {
-        ui->tableWidget->item(0,Col)->setText(outLIST.at(Col));
+        if((CopyDisColIndex+Col)>=colCount)
+            break;
+        //ui->tableWidget->item(0,Col)->setText(outLIST.at(Col));//from 0 to outLISTSize
+        ui->tableWidget->item(0,CopyDisColIndex+Col)->setText(outLIST.at(Col));
+    }
+}
+
+void DataEditWin::ResetDataFun()
+{
+    int colCount=ui->tableWidget->columnCount();
+    for (int Col=0;Col< colCount;Col++ ) {
+        ui->tableWidget->item(0,Col)->setText("");
     }
 }
 
@@ -614,6 +664,36 @@ void DataEditWin::ModifyDataFun(int curRowIndex)
             break;
         }
     }
+}
+
+void DataEditWin::CopyDataFun()
+{
+    QString copyTxt="";
+    QList<QTableWidgetItem*>items=ui->tableWidget_2->selectedItems();
+    int selectedCount=items.count();
+    if(selectedCount<=0)
+        return;
+
+    int row=items.at(0)->row();
+    for(int index=0;index<selectedCount;index++){
+        //int row=ui->tableWidget_2->row(items.at(index));//获取选中的行
+        //        if(CopySrcRowIndex!=item->row())
+        //            continue;
+        QTableWidgetItem*item=items.at(index);
+        QString txt=item->text();//获取内容
+        if(row==item->row()){
+            copyTxt+=txt+"\t";
+        }else {
+            row=item->row();
+            copyTxt+="\n";
+            copyTxt+=txt+"\t";
+        }
+    }
+
+    qDebug()<<"copyTxt: "<<copyTxt;
+
+    QClipboard *clip = QApplication::clipboard();
+    clip->setText(copyTxt);
 }
 
 void DataEditWin::ComboBoxActivated(int index)
@@ -681,11 +761,17 @@ void DataEditWin::OnClickedPopMenu()
     else if (pAction->objectName()=="AddData") {
         AddDataFun();
     }
+    else if (pAction->objectName()=="ResetData") {
+        ResetDataFun();
+    }
 
     else if (pAction->objectName()=="DeleteData") {
         DeleteDataFun(CurRowIndex);
     }
     else if (pAction->objectName()=="ModifyData") {
         ModifyDataFun(CurRowIndex);
+    }
+    else if (pAction->objectName()=="CopyData") {
+        CopyDataFun();
     }
 }

@@ -31,6 +31,12 @@ private:
     int CurRowIndex=-1;
     int CurColIndex=-1;
 
+    int CopySrcRowIndex=-1;
+    int CopySrcColIndex=-1;
+
+    int CopyDisRowIndex=-1;
+    int CopyDisColIndex=-1;
+
 protected:
     void InitClass() override;
 
@@ -60,11 +66,14 @@ public:
     void PoptableWidget1Menu();
     void PoptableWidget2Menu();
 
+    //复制逻辑 粘贴逻辑 具体如何待定
     void AddDataFun();
     void PasteDataFun();
+    void ResetDataFun();
 
     void DeleteDataFun(int curRowIndex);
     void ModifyDataFun(int curRowIndex);
+    void CopyDataFun();
 
 
 public slots:
