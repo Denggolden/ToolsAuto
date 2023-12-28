@@ -52,6 +52,8 @@ public:
     void LoadModTemplate();
     void LoadWinData();
 
+    void UpDateWinShowData();
+
     void SetTableWidgetHader(QTableWidget *tableWidget,const QStringList &header);
     void ResetTableWidget1Data(QTableWidget *tableWidget,const QStringList &header);
     void SetTableWidget2Data(QTableWidget *tableWidget,const QStringList &header,const QString &modName);

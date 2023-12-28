@@ -12,6 +12,8 @@
 #include <QMessageBox>
 
 #include <QClipboard>
+#include "DataEditWin.h"
+#include "Src/Common/ReflexObject.h"
 
 ModelEditWin::ModelEditWin(QWidget *parent) :
     WidgetBase(parent),
@@ -770,6 +772,9 @@ void ModelEditWin::DeleteModFun(int curRowIndex)
     ModListInfoList.removeAt(curRowIndex);
 
     DeleteDataTemplate(modListInfo.ModName);
+
+    DataEditWin *pDataEditWin= dynamic_cast<DataEditWin*>(ReflexObject::Instance()->GetObjectIns("DataEditWin"));
+    pDataEditWin->UpDateWinShowData();
 }
 
 void ModelEditWin::ModifyAddFieldFun(int curRowIndex)
@@ -806,6 +811,9 @@ void ModelEditWin::ModifyAddFieldFun(int curRowIndex)
     ModListInfoList[curRowIndex].FieldList.append(QString("%1.NewField").arg(modName));
 
     AddFieldDataTemplate(modName,modFieldCount+1,QString("%1.NewField").arg(modName));
+
+    DataEditWin *pDataEditWin= dynamic_cast<DataEditWin*>(ReflexObject::Instance()->GetObjectIns("DataEditWin"));
+    pDataEditWin->UpDateWinShowData();
 }
 
 void ModelEditWin::ModifyEditFieldFun(int curRowIndex)
@@ -823,6 +831,9 @@ void ModelEditWin::ModifyEditFieldFun(int curRowIndex)
 
     //或许还需要修改与之相关联的数据的Key
     EditFieldDataTemplate(preModListInfo,curModListInfo);
+
+    DataEditWin *pDataEditWin= dynamic_cast<DataEditWin*>(ReflexObject::Instance()->GetObjectIns("DataEditWin"));
+    pDataEditWin->UpDateWinShowData();
 }
 
 void ModelEditWin::ModifyDeleteFieldFun(int curRowIndex, int curColIndex)
@@ -852,6 +863,9 @@ void ModelEditWin::ModifyDeleteFieldFun(int curRowIndex, int curColIndex)
     }
 
     DeleteDataFieldTemplate(modName,fieldKey);
+
+    DataEditWin *pDataEditWin= dynamic_cast<DataEditWin*>(ReflexObject::Instance()->GetObjectIns("DataEditWin"));
+    pDataEditWin->UpDateWinShowData();
 }
 
 void ModelEditWin::ModifyXML()

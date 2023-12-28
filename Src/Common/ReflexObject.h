@@ -15,6 +15,7 @@
 
 class TitleBarWin;
 class StatusBarWin;
+class OperateRecordWin;
 
 class TsHandelMainWin;
 class TsFileCreateWin;
@@ -48,6 +49,7 @@ public:
 private:
     TitleBarWin* pTitleBarWin=nullptr;
     StatusBarWin *pStatusBarWin=nullptr;
+    OperateRecordWin *pOperateRecordWin=nullptr;
 
     TsHandelMainWin *pTsHandelMainWin=nullptr;
     TsFileCreateWin *pTsFileCreateWin=nullptr;

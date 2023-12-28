@@ -111,6 +111,10 @@ typedef struct FieldKeyReplaceInfo{
     QString NewFieldKey;
 }FieldKeyReplaceInfo ;
 
+enum LogGrade{
+    Normal=0,Warning,Critical,Fatal
+};
+
 class DataModel
 {
     //Q_OBJECT

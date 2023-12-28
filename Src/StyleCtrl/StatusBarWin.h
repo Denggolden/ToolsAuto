@@ -25,8 +25,18 @@ protected:
 public:
     void InitLable();
     void InitEventFilterObj();
+    void InitFrame();
+    void InitToolButton();
+    void InitLineEdit();
 
     void SetTipInfo(const QString &tipMsg);
+    void SetLogInfo(const QString &logMsg);
+
+    void ShowOperateRecordArea();
+    void HideOperateRecordArea();
+
+public slots:
+    void ExpandTBtnClicked(bool checked);
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;

@@ -42,6 +42,7 @@ MainWin::~MainWin()
 
 void MainWin::InitClass()
 {
+
     InitListWidget();
     InitStackedWidget();
     InitWinCtrl();
@@ -127,16 +128,16 @@ void MainWin::CurrentRowChangedSlots(int curRow)
 
 void MainWin::showEvent(QShowEvent *)
 {
-//    QDesktopWidget* desktop = QApplication::desktop();
-//    QRect screen = desktop->screenGeometry();
+    //    QDesktopWidget* desktop = QApplication::desktop();
+    //    QRect screen = desktop->screenGeometry();
 
-//    Width=DataOperate::Instance()->GetIniFileNode(tr("MainWinGroup"),tr("Width"), tr("800")).toInt();
-//    Height=DataOperate::Instance()->GetIniFileNode(tr("MainWinGroup"),tr("Height"), tr("600")).toInt();
+    //    Width=DataOperate::Instance()->GetIniFileNode(tr("MainWinGroup"),tr("Width"), tr("800")).toInt();
+    //    Height=DataOperate::Instance()->GetIniFileNode(tr("MainWinGroup"),tr("Height"), tr("600")).toInt();
 
-//    int x = (screen.width() - Width) / 2;
-//    int y = (screen.height() - Height) / 2;
-//    //this->setGeometry(x, y, Width, Height); // 让窗口位于屏幕中心
-//    this->resize(Width,Height);
+    //    int x = (screen.width() - Width) / 2;
+    //    int y = (screen.height() - Height) / 2;
+    //    //this->setGeometry(x, y, Width, Height); // 让窗口位于屏幕中心
+    //    this->resize(Width,Height);
 }
 
 void MainWin::resizeEvent(QResizeEvent *event)

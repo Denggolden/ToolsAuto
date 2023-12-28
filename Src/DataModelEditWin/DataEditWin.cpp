@@ -165,6 +165,15 @@ void DataEditWin::InitTableWidget(QTableWidget *tableWidget, int flag)
         //        qDebug()<<"cellPressed";
         //        qDebug()<<"row: "<<row;qDebug()<<"column: "<<column;
     });
+
+    //    connect(tableWidget,static_cast<void (QTableWidget::*)(QTableWidgetItem *)>(&QTableWidget::itemEntered), this,[this](QTableWidgetItem *item){
+    //        QTableWidget *TableWidget = qobject_cast<QTableWidget*>(sender());
+    //        if(TableWidget==ui->tableWidget)
+    //            return;
+
+    //        qDebug()<<"cellEntered";
+    //        qDebug()<<"row: "<<item->row();qDebug()<<"column: "<<item->column();
+    //    });
 }
 
 void DataEditWin::LoadModTemplate()
@@ -214,6 +223,7 @@ void DataEditWin::LoadWinData()
     if(ModListInfoListSize<=0)
         return;
 
+    ui->comboBox->clear();
     for (int index=0;index< ModListInfoListSize;index++ ) {
         ui->comboBox->addItem(ModListInfoList.at(index).ModName);
     }
@@ -233,6 +243,12 @@ void DataEditWin::LoadWinData()
     ResetTableWidget1Data(ui->tableWidget,header1);
     //然后加载数据到 ui->tableWidget_2 中
     SetTableWidget2Data(ui->tableWidget_2,header2,modName);
+}
+
+void DataEditWin::UpDateWinShowData()
+{
+    LoadModTemplate();
+    LoadWinData();
 }
 
 void DataEditWin::SetTableWidgetHader(QTableWidget *tableWidget, const QStringList &header)

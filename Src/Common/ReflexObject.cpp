@@ -7,6 +7,7 @@
 
 #include "Src/StyleCtrl/TitleBarWin.h"
 #include "Src/StyleCtrl/StatusBarWin.h"
+#include "Src/StyleCtrl/OperateRecordWin.h"
 
 #include "Src/TsHandelWin/TsHandelMainWin.h"
 #include "Src/TsHandelWin/TsFileCreateWin.h"
@@ -74,6 +75,8 @@ void ReflexObject::InitObjectIns()
     CreateWin(TitleBarWin,TitleBarWin);
     //状态栏
     CreateWin(StatusBarWin,StatusBarWin);
+    //操作记录
+    CreateWin(OperateRecordWin,OperateRecordWin);
 
     //软件主体-Qt翻译自动化
     CreateWin(TsHandelMainWin,TsHandelMainWin);
@@ -89,7 +92,7 @@ void ReflexObject::InitObjectIns()
     CreateWin(ModelEditWin,ModelEditWin);
     CreateWin(DataEditWin,DataEditWin);
 
-    InitClassObj();
+    //InitClassObj();
 }
 
 void ReflexObject::InitClassObj()
