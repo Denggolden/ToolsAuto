@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include "Src/Common/GlobalCus.h"
+
 class JsonHandel
 {
     //Q_OBJECT

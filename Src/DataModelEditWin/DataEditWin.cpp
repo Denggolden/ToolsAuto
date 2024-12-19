@@ -408,7 +408,11 @@ void DataEditWin::AddDataToMod(const QString &modName, const int &iDCount, QList
     }
 
     QTextStream stream(&file);
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
     stream.setCodec("utf-8");
+#else
+
+#endif
     doc.save(stream, 2);		// 缩进2格
     file.close();
 }
@@ -471,7 +475,11 @@ void DataEditWin::DeleteDataToMod(const QString &modName, const QString &dataId)
     }
 
     QTextStream stream(&file);
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
     stream.setCodec("utf-8");
+#else
+
+#endif
     doc.save(stream, 2);		// 缩进2格
     file.close();
 }
@@ -526,7 +534,11 @@ void DataEditWin::ModifyDataToMod(const QString &modName,const QString &dataId, 
     }
 
     QTextStream stream(&file);
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
     stream.setCodec("utf-8");
+#else
+
+#endif
     doc.save(stream, 2);		// 缩进2格
     file.close();
 }

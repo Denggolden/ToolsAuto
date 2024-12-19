@@ -4,6 +4,8 @@
 #include <QObject>
 #include "Src/DataManage/DataModel.h"
 
+#include "Src/Common/GlobalCus.h"
+
 class ExcelHandel
 {
     //Q_OBJECT

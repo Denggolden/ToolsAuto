@@ -659,7 +659,11 @@ void TsFileExportWin::ForEachTSFileSummarySource(QDomElement *root, QList<TSFile
             //qDebug()<< childEle.text();//读取节点文本
             QString source="",/*translation="",*/comment="";
             source=childEle.text();
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
             bool ret = source.contains(QRegExp("[\\x4e00-\\x9fa5]+")); //使用正则表达式判断是否包含中文字符
+#else
+            bool ret = source.contains(QRegularExpression("[\\x4e00-\\x9fa5]+")); //使用正则表达式判断是否包含中文字符
+#endif
             if(ret) {//存在中文
                 QList<QString> translationList;translationList.clear();
                 //            if(!childEle.nextSiblingElement().isNull())

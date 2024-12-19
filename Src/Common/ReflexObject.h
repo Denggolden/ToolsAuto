@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QMap>
 
+#include "Src/Common/GlobalCus.h"
 //pMainWin=new MainWin();
 //pMainWin->setObjectName("MainWin");
 //Ins.AddObjectIns(pMainWin);
@@ -29,6 +30,9 @@ class JsonHandelWin;
 class DataModelEditMainWin;
 class ModelEditWin;
 class DataEditWin;
+
+class FileCompareDiffMainWin;
+class FileCompareDiffWin;
 
 class MainWin;
 
@@ -63,6 +67,9 @@ private:
     DataModelEditMainWin *pDataModelEditMainWin=nullptr;
     ModelEditWin *pModelEditWin=nullptr;
     DataEditWin *pDataEditWin=nullptr;
+
+    FileCompareDiffMainWin *pFileCompareDiffMainWin=nullptr;
+    FileCompareDiffWin *pFileCompareDiffWin=nullptr;
 
     MainWin *pMainWin=nullptr;
 

@@ -299,7 +299,11 @@ void ModelEditWin::AddDataTemplate(const QString &modName, const int &modFieldCo
         }
 
         QTextStream stream(&file);
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
         stream.setCodec("utf-8");
+#else
+
+#endif
         doc.save(stream, 2);		// 缩进2格
         file.close();
 
@@ -329,7 +333,11 @@ void ModelEditWin::AddDataTemplate(const QString &modName, const int &modFieldCo
         root.appendChild(modEmelNode);
 
         QTextStream stream(&file);
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
         stream.setCodec("utf-8");
+#else
+
+#endif
         doc.save(stream, 2);		// 缩进2格
         file.close();
     }
@@ -374,7 +382,11 @@ void ModelEditWin::DeleteDataTemplate(const QString &modName)
         }
 
         QTextStream stream(&file);
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
         stream.setCodec("utf-8");
+#else
+
+#endif
         doc.save(stream, 2);		// 缩进2格
         file.close();
     }
@@ -428,7 +440,11 @@ void ModelEditWin::AddFieldDataTemplate(const QString &modName, const int &modFi
         }
 
         QTextStream stream(&file);
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
         stream.setCodec("utf-8");
+#else
+
+#endif
         doc.save(stream, 2);		// 缩进2格
         file.close();
     }
@@ -477,7 +493,11 @@ void ModelEditWin::EditFieldDataTemplate(const ModListInfo &preModListInfo, cons
         }
 
         QTextStream stream(&file);
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
         stream.setCodec("utf-8");
+#else
+
+#endif
         doc.save(stream, 2);		// 缩进2格
         file.close();
     }
@@ -571,7 +591,11 @@ void ModelEditWin::DeleteDataFieldTemplate(const QString &modName, const QString
         }
 
         QTextStream stream(&file);
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
         stream.setCodec("utf-8");
+#else
+
+#endif
         doc.save(stream, 2);		// 缩进2格
         file.close();
     }

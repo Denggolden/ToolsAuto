@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "Src/Common/GlobalCus.h"
+
 namespace Ui {
 class WidgetBase;
 }

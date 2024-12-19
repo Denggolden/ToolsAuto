@@ -387,7 +387,11 @@ void TsFileTranslateWin::HandelTRFileInfoList(QList<TRFileInfo> tRFileInfoList)
 
         QTextStream ts(&fileOut);
         //ts.reset();
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
         ts.setCodec("utf-8");
+#else
+
+#endif
         //doc.save(ts,2,QDomNode::EncodingFromTextStream);
         doc.save(ts,2);
         fileOut.close();

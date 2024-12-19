@@ -1,6 +1,8 @@
 QT       += core gui xml
 # qBreakpad中需要使用到network模块
 QT += network
+# qt线程
+QT += concurrent
 
 # 启用多线程、异常、RTTI、STL支持
 CONFIG += thread exceptions rtti stl
@@ -25,6 +27,7 @@ include($$PWD/Src/TsHandelWin/TsHandelWin.pri)
 include($$PWD/Src/Common/Common.pri)
 include($$PWD/Src/FileConvertWin/FileConvertWin.pri)
 include($$PWD/Src/DataModelEditWin/DataModelEditWin.pri)
+include($$PWD/Src/FileCompareDiffWin/FileCompareDiffWin.pri)
 
 #第三方库
 include($$PWD/ThirdLib/ThirdLib.pri)

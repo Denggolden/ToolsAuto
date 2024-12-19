@@ -27,7 +27,11 @@ QString DataOperate::GetIniFileNode(QString groupName, QString key, QString defa
     QString value=defaultValue;
     //创建QSettings对象并指定ini文件路径并将格式设置为ini
     QSettings setting(fileName, QSettings::IniFormat);
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
     setting.setIniCodec("utf-8");// 解决乱码
+#else
+
+#endif
     //添加第二个分组以及其键值对（创建分组的第二种方法）
     QString Key=groupName+"/"+key;
     if (setting.contains(Key)==true)
@@ -43,7 +47,11 @@ void DataOperate::WriteIniFile(QString groupName, QString key, QString value)
     QString fileName = QCoreApplication::applicationDirPath() + "/TranslationAuto.ini";
     //创建QSettings对象并指定ini文件路径并将格式设置为ini
     QSettings setting(fileName, QSettings::IniFormat);
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
     setting.setIniCodec("utf-8");// 解决乱码
+#else
+
+#endif
     //添加第二个分组以及其键值对（创建分组的第二种方法）
     QString Key=groupName+"/"+key;
     setting.setValue(Key, value);

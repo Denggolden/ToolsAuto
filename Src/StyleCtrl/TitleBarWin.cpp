@@ -151,10 +151,10 @@ void TitleBarWin::MaxWinTBtnClicked(bool checked)
 
 void TitleBarWin::CloseWinTBtnClicked(bool checked)
 {
-    //qApp->quit();
-    pSystemTrayIcon->show();
-    MainWin *pMainWin = dynamic_cast<MainWin*>(ReflexObject::Instance()->GetObjectIns("MainWin"));
-    pMainWin->hide();
+    qApp->quit();
+    // pSystemTrayIcon->show();
+    // MainWin *pMainWin = dynamic_cast<MainWin*>(ReflexObject::Instance()->GetObjectIns("MainWin"));
+    // pMainWin->hide();
 }
 
 void TitleBarWin::ActionTriggered(bool)
@@ -227,4 +227,49 @@ bool TitleBarWin::eventFilter(QObject *watched, QEvent *event)
         }
     }
     return QWidget::eventFilter(watched, event);
+}
+
+void TitleBarWin::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton){
+        IsPress=true;
+        StartPos= event->globalPos();
+        CurPos=event->globalPos();
+        qDebug()<<"mousePressEvent";
+        // qDebug()<<"StartPos: "<<StartPos;
+        // qDebug()<<"CurPos: "<<CurPos;
+    }
+}
+
+void TitleBarWin::mouseReleaseEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton){
+        IsPress=false;
+        EndPos= event->globalPos();
+        qDebug()<<"mouseReleaseEvent";
+        // qDebug()<<"EndPos: "<<EndPos;
+    }
+}
+
+void TitleBarWin::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton){
+        //qDebug()<<"mouseDoubleClickEvent:LeftButton ";
+        //MaxWinTBtnClicked(false);
+    }
+}
+
+void TitleBarWin::mouseMoveEvent(QMouseEvent *event)
+{
+    if(IsPress==true){
+        MainWin* pMainWin= dynamic_cast<MainWin*>(ReflexObject::Instance()->GetObjectIns("MainWin"));
+        QPointF tempCurPos=event->globalPos();
+        QPointF detPos=QPointF(CurPos.x()-tempCurPos.x(),CurPos.y()-tempCurPos.y());
+        CurPos=tempCurPos;//更新当前点
+        //qDebug()<<"detPos: "<<detPos;
+
+        QPointF winPos=pMainWin->pos()-detPos;//当前位置-偏移值
+        //qDebug()<<"winPos: "<<winPos;
+        pMainWin->move(winPos.x(),winPos.y());
+    }else{}
 }

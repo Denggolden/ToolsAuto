@@ -22,6 +22,9 @@
 #include "Src/DataModelEditWin/ModelEditWin.h"
 #include "Src/DataModelEditWin/DataEditWin.h"
 
+#include "Src/FileCompareDiffWin/FileCompareDiffMainWin.h"
+#include "Src/FileCompareDiffWin/FileCompareDiffWin.h"
+
 ReflexObject ReflexObject::Ins;
 
 void ReflexObject::AddObjectIns(QObject *pObject)
@@ -91,6 +94,9 @@ void ReflexObject::InitObjectIns()
     CreateWin(DataModelEditMainWin,DataModelEditMainWin);
     CreateWin(ModelEditWin,ModelEditWin);
     CreateWin(DataEditWin,DataEditWin);
+    //软件主体-文件(夹)对比
+    CreateWin(FileCompareDiffMainWin,FileCompareDiffMainWin);
+    CreateWin(FileCompareDiffWin,FileCompareDiffWin);
 
     //InitClassObj();
 }

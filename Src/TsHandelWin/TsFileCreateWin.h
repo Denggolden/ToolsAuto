@@ -4,6 +4,8 @@
 //#include <QWidget>
 #include "Src/Common/WidgetBase.h"
 
+#include "Src/Common/GlobalCus.h"
+
 typedef struct CommandInfo{
     CommandInfo(){};
     CommandInfo(QString command,QString tSFilePath){Command=command;TSFilePath=tSFilePath;};

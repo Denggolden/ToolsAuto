@@ -21,10 +21,15 @@
 #include "Src/TsHandelWin/TsHandelMainWin.h"
 #include "Src/FileConvertWin/FileConvertMainWin.h"
 #include "Src/DataModelEditWin/DataModelEditMainWin.h"
+#include "Src/FileCompareDiffWin/FileCompareDiffMainWin.h"
 
 #include "Src/StyleCtrl/StatusBarWin.h"
 
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
 #include <QDesktopWidget>
+#else
+#include <QScreen>
+#endif
 
 #pragma comment(lib,"user32")
 
@@ -46,9 +51,13 @@ void MainWin::InitClass()
     InitListWidget();
     InitStackedWidget();
     InitWinCtrl();
-
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
     QDesktopWidget* desktop = QApplication::desktop();
     QRect screen = desktop->screenGeometry();
+#else
+    QScreen* desktop = QGuiApplication::primaryScreen();//获取主屏幕
+    QRect screen = desktop->geometry();
+#endif
 
     Width=DataOperate::Instance()->GetIniFileNode(tr("MainWinGroup"),tr("Width"), tr("800")).toInt();
     Height=DataOperate::Instance()->GetIniFileNode(tr("MainWinGroup"),tr("Height"), tr("600")).toInt();
@@ -72,7 +81,7 @@ void MainWin::InitListWidget()
     pListWidget->setFont(QFont("Microsoft YaHei", 12, QFont::Bold));
 
     QStringList listName;listName.clear();
-    listName<<tr("Qt翻译自动化")<<tr("文件处理")<<tr("数据模型编辑");
+    listName<<tr("Qt翻译自动化")<<tr("文件处理")<<tr("数据模型编辑")<<tr("文件(夹)对比");
     pListWidget->addItems(listName);
 
     connect(pListWidget,&QListWidget::currentRowChanged,this,&MainWin::CurrentRowChangedSlots);
@@ -85,10 +94,12 @@ void MainWin::InitStackedWidget()
     pTsHandelMainWin= dynamic_cast<TsHandelMainWin*>(ReflexObject::Instance()->GetObjectIns("TsHandelMainWin"));
     pFileConvertMainWin= dynamic_cast<FileConvertMainWin*>(ReflexObject::Instance()->GetObjectIns("FileConvertMainWin"));
     pDataModelEditMainWin= dynamic_cast<DataModelEditMainWin*>(ReflexObject::Instance()->GetObjectIns("DataModelEditMainWin"));
+    pFileCompareDiffMainWin=dynamic_cast<FileCompareDiffMainWin*>(ReflexObject::Instance()->GetObjectIns("FileCompareDiffMainWin"));
 
     pStackedWidget->addWidget(pTsHandelMainWin);
     pStackedWidget->addWidget(pFileConvertMainWin);
     pStackedWidget->addWidget(pDataModelEditMainWin);
+    pStackedWidget->addWidget(pFileCompareDiffMainWin);
 }
 
 void MainWin::InitWinCtrl()
@@ -123,6 +134,9 @@ void MainWin::CurrentRowChangedSlots(int curRow)
     }
     else if(curRow==2){
         pStackedWidget->setCurrentWidget(pDataModelEditMainWin);
+    }
+    else if(curRow==3){
+        pStackedWidget->setCurrentWidget(pFileCompareDiffMainWin);
     }
 }
 
@@ -168,7 +182,11 @@ void MainWin::paintEvent(QPaintEvent *paint)
     setMask(bmp);
 }
 
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
 bool MainWin::nativeEvent(const QByteArray &eventType, void *message, long *result)
+#else
+bool MainWin::nativeEvent(const QByteArray &eventType, void *message, qintptr *result)
+#endif
 {
     MSG* msg = static_cast<MSG*>(message);
     if (msg->message == WM_NCHITTEST) {
@@ -180,10 +198,10 @@ bool MainWin::nativeEvent(const QByteArray &eventType, void *message, long *resu
         long x = GET_X_LPARAM(msg->lParam);
         long y = GET_Y_LPARAM(msg->lParam);
 
-        int PosY = GET_Y_LPARAM(msg->lParam) - this->frameGeometry().y();
-        if(PosY < MoveHeight){//拖拽生效区域
-            *result = HTCAPTION;
-        }
+        //int PosY = GET_Y_LPARAM(msg->lParam) - this->frameGeometry().y();
+        // if(PosY < MoveHeight){//拖拽生效区域
+        //     *result = HTCAPTION;
+        // }
         // 判断鼠标位置是否在拉伸区域内
         if (y < winrect.top + BORDERWIDTH) {
             *result = HTTOP;

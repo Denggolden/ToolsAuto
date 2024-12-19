@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QMutex>
 
+#include "Src/Common/GlobalCus.h"
+
 static QMutex mutex;
 
 class LogHandel : public QObject

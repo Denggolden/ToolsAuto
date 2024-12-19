@@ -33,6 +33,7 @@ void OperateRecordWin::InitClass()
 
     //this->setMaximumHeight(500);
 
+    this->setMinimumSize(1500,900);
     this->layout()->setSpacing(0);
     this->layout()->setContentsMargins(0, 0, 0, 0);
 
@@ -85,18 +86,26 @@ void OperateRecordWin::InitTextEdit()
 
 void OperateRecordWin::AppendOperateRecord(const QString &infoMsg, LogGrade logGrade)
 {
+    int rowCount = ui->textEdit ->document()->lineCount(); //获取行数
+
     // 先保存当前的文字颜色
     QColor curTextColor = ui->textEdit->textColor();
     if(logGrade==Normal){
         // 设置当前行要使用的颜色，假设为红色
         ui->textEdit->setTextColor(Qt::black);
         // 写入一行内容
-        ui->textEdit->append(infoMsg);
+        //ui->textEdit->append(infoMsg);
+        // 写入一行内容
+        ui->textEdit->append(QString("[%1]---%2").arg(rowCount).arg(infoMsg));
     }else {
         ui->textEdit->setTextColor(Qt::yellow);
         ui->textEdit->append(infoMsg);
+        ui->textEdit->append(QString("[%1]---%2").arg(rowCount).arg(infoMsg));
     }
 
+    if(rowCount>=500){
+        ui->textEdit->clear();
+    }
     // 最后恢复原来的颜色
     ui->textEdit->setTextColor(curTextColor);
     //或者HTML
@@ -149,7 +158,11 @@ void OperateRecordWin::paintEvent(QPaintEvent *paint)
     setMask(bmp);
 }
 
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
 bool OperateRecordWin::nativeEvent(const QByteArray &eventType, void *message, long *result)
+#else
+bool OperateRecordWin::nativeEvent(const QByteArray &eventType, void *message, qintptr *result)
+#endif
 {
     MSG* msg = static_cast<MSG*>(message);
     if (msg->message == WM_NCHITTEST) {
@@ -161,10 +174,10 @@ bool OperateRecordWin::nativeEvent(const QByteArray &eventType, void *message, l
         long x = GET_X_LPARAM(msg->lParam);
         long y = GET_Y_LPARAM(msg->lParam);
 
-        int PosY = GET_Y_LPARAM(msg->lParam) - this->frameGeometry().y();
-        if(PosY < MoveHeight){//拖拽生效区域
-            *result = HTCAPTION;
-        }
+        // int PosY = GET_Y_LPARAM(msg->lParam) - this->frameGeometry().y();
+        // if(PosY < MoveHeight){//拖拽生效区域
+        //     *result = HTCAPTION;
+        // }
         // 判断鼠标位置是否在拉伸区域内
         if (y < winrect.top + BORDERWIDTH) {
             *result = HTTOP;
@@ -197,4 +210,48 @@ bool OperateRecordWin::nativeEvent(const QByteArray &eventType, void *message, l
         }
     }
     return QWidget::nativeEvent(eventType, message, result);
+}
+
+void OperateRecordWin::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton){
+        IsPress=true;
+        StartPos= event->globalPos();
+        CurPos=event->globalPos();
+        //qDebug()<<"mousePressEvent";
+        // qDebug()<<"StartPos: "<<StartPos;
+        // qDebug()<<"CurPos: "<<CurPos;
+    }
+}
+
+void OperateRecordWin::mouseReleaseEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton){
+        IsPress=false;
+        EndPos= event->globalPos();
+        //qDebug()<<"mouseReleaseEvent";
+        // qDebug()<<"EndPos: "<<EndPos;
+    }
+}
+
+void OperateRecordWin::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton){
+        //qDebug()<<"mouseDoubleClickEvent:LeftButton ";
+        //MaxWinTBtnClicked(false);
+    }
+}
+
+void OperateRecordWin::mouseMoveEvent(QMouseEvent *event)
+{
+    if(IsPress==true){
+        QPointF tempCurPos=event->globalPos();
+        QPointF detPos=QPointF(CurPos.x()-tempCurPos.x(),CurPos.y()-tempCurPos.y());
+        CurPos=tempCurPos;//更新当前点
+        //qDebug()<<"detPos: "<<detPos;
+
+        QPointF winPos=this->pos()-detPos;//当前位置-偏移值
+        //qDebug()<<"winPos: "<<winPos;
+        this->move(winPos.x(),winPos.y());
+    }else{}
 }

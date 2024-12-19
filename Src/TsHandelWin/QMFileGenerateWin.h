@@ -5,6 +5,8 @@
 #include "Src/Common/WidgetBase.h"
 #include "Src/DataManage/DataModel.h"
 
+#include "Src/Common/GlobalCus.h"
+
 class QToolButton;
 class QTreeWidgetItem;
 

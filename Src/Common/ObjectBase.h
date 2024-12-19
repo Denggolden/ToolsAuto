@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include "Src/Common/GlobalCus.h"
+
 class ObjectBase : public QObject
 {
     Q_OBJECT

@@ -81,7 +81,11 @@ void JsonHandelWin::CreateJson()
     }
 
     QTextStream stream(&file);
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
     stream.setCodec("UTF-8");		// 设置写入编码是UTF8
+#else
+
+#endif
     // 写入文件
     stream << doc.toJson();
     file.close();
@@ -125,7 +129,11 @@ void JsonHandelWin::ForEachTSFile()
     }
 
     QTextStream stream(&file);
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
     stream.setCodec("UTF-8");		// 设置写入编码是UTF8
+#else
+
+#endif
     // 写入文件
     stream << docJson.toJson();
     file.close();
@@ -171,7 +179,11 @@ void JsonHandelWin::ForEachJsonFile()
 
     // 读取文件的全部内容
     QTextStream stream(&file);
-    stream.setCodec("UTF-8");		// 设置读取编码是UTF8
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
+    stream.setCodec("UTF-8");		// 设置写入编码是UTF8
+#else
+
+#endif
     QString str = stream.readAll();
 
     file.close();
@@ -237,7 +249,11 @@ void JsonHandelWin::ModifyJsonFile()
 
     // 读取文件的全部内容
     QTextStream stream(&file);
-    stream.setCodec("UTF-8");		// 设置读取编码是UTF8
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
+    stream.setCodec("UTF-8");		// 设置写入编码是UTF8
+#else
+
+#endif
     QString str = stream.readAll();
 
     file.close();
@@ -270,7 +286,11 @@ void JsonHandelWin::ModifyJsonFile()
 
     // 将修改后的内容写入文件
     QTextStream wirteStream(&writeFile);
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
     wirteStream.setCodec("UTF-8");		// 设置读取编码是UTF8
+#else
+
+#endif
     wirteStream << docOut.toJson();		// 写入文件
     writeFile.close();					// 关闭文件
 

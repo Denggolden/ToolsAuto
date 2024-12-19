@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include "Src/Common/GlobalCus.h"
+
 typedef struct ExportFileInfo{
     ExportFileInfo(){};
     ExportFileInfo(QString tSFilePath,QString exportFilePath){TSFilePath=tSFilePath;ExportFilePath=exportFilePath;};

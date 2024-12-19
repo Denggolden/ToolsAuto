@@ -4,6 +4,9 @@
 //#include <QWidget>
 #include "Src/Common/WidgetBase.h"
 
+#include "Src/Common/GlobalCus.h"
+
+
 class QDomElement;
 
 namespace Ui {

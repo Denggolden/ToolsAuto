@@ -79,7 +79,11 @@ void LogHandel::myMessageOutput(QtMsgType type, const QMessageLogContext &contex
     {
         QTextStream logStream(&logfile);
         //logStream.setCodec(QTextCodec::codecForName("utf-8"));
+#if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
         logStream.setCodec("utf-8");
+#else
+
+#endif
         //logStream<<strOutStream<<"\n";
         logStream<<strOutStream;
     }
