@@ -78,6 +78,8 @@ public:
 
     void SetFile1And2Path(const QString& file1Path,const QString& file2Path);
 
+    QString CovDuration(long long duration);
+
 protected:
     void SetIsOpenDiffCompete(bool isOpenDiffCompete);
     bool GetIsOpenDiffCompete();
@@ -89,7 +91,7 @@ signals:
     void SetTBtnIsEnableSignal(bool enable);
     void UpDateDiffResult(const QString& result);
     void ClearTableWidget(const QString& upDateTableWidget);
-    void UpDateTableWidget(const QString& upDateTableWidget,int rowIndex,bool isNewAdd,bool isEqual,const QString& itemName,const QString& itemResult,const QString& itemStatus);
+    void UpDateTableWidget(const QString& upDateTableWidget,int rowIndex,bool isNewAdd,bool isEqual,const QString& itemName,const QString& itemResult,const QString& itemStatus,const QString& duration);
     void TimerIsEnable(bool enable);
 
 public slots:
@@ -97,7 +99,7 @@ public slots:
     void SetTBtnIsEnableSlots(bool enable);
     void UpDateDiffResultSlots(const QString& result);
     void ClearTableWidgetSlots(const QString& upDateTableWidget);
-    void UpDateTableWidgetSlots(const QString& upDateTableWidget,int rowIndex,bool isNewAdd,bool isEqual,const QString& itemName,const QString& itemResult,const QString& itemStatus);
+    void UpDateTableWidgetSlots(const QString& upDateTableWidget,int rowIndex,bool isNewAdd,bool isEqual,const QString& itemName,const QString& itemResult,const QString& itemStatus,const QString& duration);
     void TimerIsEnableSlots(bool enable);
     void OnTimeOut();
     void OnTimeOutWait();

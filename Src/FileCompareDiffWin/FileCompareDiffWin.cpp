@@ -676,17 +676,21 @@ void FileCompareDiffWin::ToolButtonClicked(bool checked)
     }
     else if(ToolButton->objectName()=="TestTBtn"){
 
-        // QByteArray md51= GetFileHash("G:/Game/刺客信条/刺客信条：起源/游戏/Assassins Creed Origins Gold Edition.part01.rar",QCryptographicHash::Md5);
-        // QByteArray md52= GetFileHash("G:/Game/刺客信条/刺客信条：起源/游戏/Assassins Creed Origins Gold Edition.part02.rar",QCryptographicHash::Md5);
+        // auto ret= QtConcurrent::run([this](){
+        //     auto start = std::chrono::high_resolution_clock::now();
 
-        // // QString md5Str1 = QString(md51);
-        // // QString md5Str2 = QString(md52);
+        //     // Your code here
+        //     // ...
+        //     //QThread::msleep(10);.
+        //     emit SetTBtnIsEnableSignal(true);
 
-        // QString md5Str1 = md51.toHex();
-        // QString md5Str2 = md52.toHex();
+        //     auto stop = std::chrono::high_resolution_clock::now();
+        //     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
-        // qDebug()<<"md5Str1: "<<md5Str1;
-        // qDebug()<<"md5Str2: "<<md5Str2;
+        //     qDebug() << "Elapsed time: " << duration << " us\n";
+
+        //     return;
+        // });
     }
 }
 

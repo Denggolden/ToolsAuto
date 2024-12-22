@@ -4,6 +4,7 @@
 #include <QtConcurrent>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <chrono>
 
 #include "Src/DataManage/DataOperate.h"
 
@@ -115,11 +116,11 @@ void FileCompareDiffDetailsWin::InitLabel()
 void FileCompareDiffDetailsWin::InitTableWidget()
 {
     QStringList labels;
-    labels<<tr("项目")<<tr("结果")<<tr("状态");
+    labels<<tr("项目")<<tr("结果")<<tr("状态")<<tr("耗时");
 
     //设置列数
-    ui->tableWidget->setColumnCount(3);
-    ui->tableWidget_2->setColumnCount(3);
+    ui->tableWidget->setColumnCount(4);
+    ui->tableWidget_2->setColumnCount(4);
 
     ui->tableWidget->verticalHeader()->hide();
     ui->tableWidget_2->verticalHeader()->hide();
@@ -151,7 +152,7 @@ void FileCompareDiffDetailsWin::InitTableWidget()
     connect(this,static_cast<void (FileCompareDiffDetailsWin::*)(const QString&)>(&FileCompareDiffDetailsWin::ClearTableWidget),
             this,&FileCompareDiffDetailsWin::ClearTableWidgetSlots,Qt::QueuedConnection);
 
-    connect(this,static_cast<void (FileCompareDiffDetailsWin::*)(const QString&,int,bool,bool,const QString&,const QString&,const QString&)>(&FileCompareDiffDetailsWin::UpDateTableWidget),
+    connect(this,static_cast<void (FileCompareDiffDetailsWin::*)(const QString&,int,bool,bool,const QString&,const QString&,const QString&,const QString&)>(&FileCompareDiffDetailsWin::UpDateTableWidget),
             this,&FileCompareDiffDetailsWin::UpDateTableWidgetSlots,Qt::QueuedConnection);
 }
 
@@ -261,12 +262,14 @@ void FileCompareDiffDetailsWin::OpenDiff()
                 break;
             }
 
+            auto start = std::chrono::high_resolution_clock::now();
+
             QString itemName=itemList[index];
             QString itemResult="";
             QString itemStatus="进行中";
             //开始计算
-            emit UpDateTableWidget("tableWidget",index,true,true,itemName,itemResult,itemStatus);
-            emit UpDateTableWidget("tableWidget_2",index,true,true,itemName,itemResult,itemStatus);
+            emit UpDateTableWidget("tableWidget",index,true,true,itemName,itemResult,itemStatus,"");
+            emit UpDateTableWidget("tableWidget_2",index,true,true,itemName,itemResult,itemStatus,"");
 
             QThread::msleep(10);//这里模拟计算
 
@@ -318,9 +321,14 @@ void FileCompareDiffDetailsWin::OpenDiff()
             allItemCount++;
 
             itemStatus="完成";
+
+            auto stop = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+            QString durationStr=CovDuration(duration);
+
             //计算完成
-            emit UpDateTableWidget("tableWidget",index,false,isEqual,itemName,itemResult1,itemStatus);
-            emit UpDateTableWidget("tableWidget_2",index,false,isEqual,itemName,itemResult2,itemStatus);
+            emit UpDateTableWidget("tableWidget",index,false,isEqual,itemName,itemResult1,itemStatus,durationStr);
+            emit UpDateTableWidget("tableWidget_2",index,false,isEqual,itemName,itemResult2,itemStatus,durationStr);
         }
 
         emit TimerIsEnable(false);
@@ -466,6 +474,22 @@ void FileCompareDiffDetailsWin::SetFile1And2Path(const QString &file1Path, const
     }
 }
 
+QString FileCompareDiffDetailsWin::CovDuration(long long duration)
+{
+    QString durationStr="";
+    if(duration<=1000&&duration>=0){
+        durationStr=QString("%1 us").arg(duration);
+    }
+    else if(duration<=1000*1000&&duration>1000){
+        durationStr=QString("%1 ms").arg(QString::number((float)duration/1000.0,'f',3));
+    }
+    else if(duration<=1000*1000*1000&&duration>1000*1000){
+        durationStr=QString("%1 s").arg(QString::number((float)duration/(1000.0*1000.0),'f',3));
+    }
+
+    return durationStr;
+}
+
 void FileCompareDiffDetailsWin::SetIsOpenDiffCompete(bool isOpenDiffCompete)
 {
     IsOpenDiffCompeteMutex.lock();
@@ -569,64 +593,58 @@ void FileCompareDiffDetailsWin::ClearTableWidgetSlots(const QString &upDateTable
     }
 }
 
-void FileCompareDiffDetailsWin::UpDateTableWidgetSlots(const QString &upDateTableWidget, int rowIndex, bool isNewAdd,bool isEqual, const QString &itemName, const QString &itemResult, const QString &itemStatus)
+void FileCompareDiffDetailsWin::UpDateTableWidgetSlots(const QString &upDateTableWidget, int rowIndex, bool isNewAdd,bool isEqual, const QString &itemName, const QString &itemResult, const QString &itemStatus,const QString& duration)
 {
     QFont font("Microsoft YaHei", 8, QFont::Bold);
     if(upDateTableWidget=="tableWidget"){
         if(isNewAdd==true){
             ui->tableWidget->insertRow(rowIndex);//增加一行
-            //插入元素
-            ui->tableWidget->setItem(rowIndex,0,new QTableWidgetItem(itemName));
-            ui->tableWidget->setItem(rowIndex,1,new QTableWidgetItem(itemResult));
-            ui->tableWidget->setItem(rowIndex,2,new QTableWidgetItem(itemStatus));
-
-            ui->tableWidget->item(rowIndex,0)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-            ui->tableWidget->item(rowIndex,1)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-            ui->tableWidget->item(rowIndex,2)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-
-            ui->tableWidget->item(rowIndex,0)->setFont(font);
-            ui->tableWidget->item(rowIndex,1)->setFont(font);
-            ui->tableWidget->item(rowIndex,2)->setFont(font);
+            QStringList LIST;LIST.clear();
+            LIST<<itemName<<itemResult<<itemStatus<<duration;
+            int LISTSize=LIST.size();
+            for (int col = 0; col < LISTSize; ++col) {
+                ui->tableWidget->setItem(rowIndex,col,new QTableWidgetItem(LIST[col]));
+                ui->tableWidget->item(rowIndex,col)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+                ui->tableWidget->item(rowIndex,col)->setFont(font);
+            }
 
         }else{
-            ui->tableWidget->item(rowIndex,0)->setText(itemName);
-            ui->tableWidget->item(rowIndex,1)->setText(itemResult);
-            ui->tableWidget->item(rowIndex,2)->setText(itemStatus);
+            QStringList LIST;LIST.clear();
+            LIST<<itemName<<itemResult<<itemStatus<<duration;
+            int LISTSize=LIST.size();
+            for (int col = 0; col < LISTSize; ++col) {
+                ui->tableWidget->item(rowIndex,col)->setText(LIST[col]);
+            }
         }
     }
 
     if(upDateTableWidget=="tableWidget_2"){
         if(isNewAdd==true){
             ui->tableWidget_2->insertRow(rowIndex);//增加一行
-            //插入元素
-            ui->tableWidget_2->setItem(rowIndex,0,new QTableWidgetItem(itemName));
-            ui->tableWidget_2->setItem(rowIndex,1,new QTableWidgetItem(itemResult));
-            ui->tableWidget_2->setItem(rowIndex,2,new QTableWidgetItem(itemStatus));
-
-
-            ui->tableWidget_2->item(rowIndex,0)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-            ui->tableWidget_2->item(rowIndex,1)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-            ui->tableWidget_2->item(rowIndex,2)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-
-            ui->tableWidget_2->item(rowIndex,0)->setFont(font);
-            ui->tableWidget_2->item(rowIndex,1)->setFont(font);
-            ui->tableWidget_2->item(rowIndex,2)->setFont(font);
+            QStringList LIST;LIST.clear();
+            LIST<<itemName<<itemResult<<itemStatus<<duration;
+            int LISTSize=LIST.size();
+            for (int col = 0; col < LISTSize; ++col) {
+                ui->tableWidget_2->setItem(rowIndex,col,new QTableWidgetItem(LIST[col]));
+                ui->tableWidget_2->item(rowIndex,col)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+                ui->tableWidget_2->item(rowIndex,col)->setFont(font);
+            }
 
         }else{
-            ui->tableWidget_2->item(rowIndex,0)->setText(itemName);
-            ui->tableWidget_2->item(rowIndex,1)->setText(itemResult);
-            ui->tableWidget_2->item(rowIndex,2)->setText(itemStatus);
+            QStringList LIST;LIST.clear();
+            LIST<<itemName<<itemResult<<itemStatus<<duration;
+            int LISTSize=LIST.size();
+            for (int col = 0; col < LISTSize; ++col) {
+                ui->tableWidget_2->item(rowIndex,col)->setText(LIST[col]);
+            }
         }
     }
 
     if(isEqual==false){
-        ui->tableWidget->item(rowIndex,0)->setForeground(QColor(Qt::red));
-        ui->tableWidget->item(rowIndex,1)->setForeground(QColor(Qt::red));
-        ui->tableWidget->item(rowIndex,2)->setForeground(QColor(Qt::red));
-
-        ui->tableWidget_2->item(rowIndex,0)->setForeground(QColor(Qt::red));
-        ui->tableWidget_2->item(rowIndex,1)->setForeground(QColor(Qt::red));
-        ui->tableWidget_2->item(rowIndex,2)->setForeground(QColor(Qt::red));
+        for (int col = 0; col < 4; ++col) {
+            ui->tableWidget->item(rowIndex,col)->setForeground(QColor(Qt::red));
+            ui->tableWidget_2->item(rowIndex,col)->setForeground(QColor(Qt::red));
+        }
     }
 
     // pItem->setBackground(QBrush(Qt::blue));        // 设置背景色
