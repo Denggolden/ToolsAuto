@@ -5,8 +5,11 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QtConcurrent>
+#include <QMenu>
+#include <QDesktopServices>
 
 #include "Src/DataManage/DataOperate.h"
+#include "Src/FileCompareDiffWin/FileCompareDiffDetailsWin.h"
 
 FileCompareDiffWin::FileCompareDiffWin(QWidget *parent)
     : WidgetBase(parent)
@@ -206,7 +209,7 @@ void FileCompareDiffWin::SelectFileOrDirPathFun(QString flag)
         DataOperate::Instance()->WriteIniFile(tr("FileCompareDiffWinGroup"),tr("FileOrDirPath1"),fileName);
     }
     else if(flag==QString("SelectFileOrDirPath2")){
-        FileOrDirPath1=fileName;
+        FileOrDirPath2=fileName;
         ui->lineEdit_2->setText(fileName);
         qDebug()<<QString("选择的文件(夹)2路径：%1").arg(fileName);
         DataOperate::Instance()->WriteIniFile(tr("FileCompareDiffWinGroup"),tr("FileOrDirPath2"),fileName);
@@ -574,37 +577,37 @@ void FileCompareDiffWin::FoEachDirTempAsyn(QString dirPath, QTreeWidgetItem *roo
 
 bool FileCompareDiffWin::JudgeTowFileIsConsistent(const QString &filePath1, const QString &filePath2)
 {
-    QByteArray md51= GetFileMd5(filePath1);
-    QByteArray md52= GetFileMd5(filePath2);
+    QString md5Str1 = GetFileHashStr(filePath1,QCryptographicHash::Md5);
+    QString md5Str2 = GetFileHashStr(filePath2,QCryptographicHash::Md5);
 
-    QString md5Str1 = md51.toHex();
-    QString md5Str2 = md52.toHex();
+    QString sha1Str1 = GetFileHashStr(filePath1,QCryptographicHash::Sha1);
+    QString sha1Str2 = GetFileHashStr(filePath2,QCryptographicHash::Sha1);
 
-    if(md5Str1==md5Str2){
+    if(md5Str1==md5Str2&&sha1Str1==sha1Str2){
         return true;
     }else{
         return false;
     }
 }
 
-QByteArray FileCompareDiffWin::GetFileMd5(const QString &fileName)
+QString FileCompareDiffWin::GetFileHashStr(const QString &fileName, QCryptographicHash::Algorithm algorithm)
 {
     QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly)){//以只读形式打开文件
         return QByteArray();
     }
 
-    QCryptographicHash hash(QCryptographicHash::Md5);
+    QCryptographicHash hash(algorithm);
     while(!file.atEnd())
     {
-        QByteArray data = file.read(10 * 1024 * 1024);// 10m  实际内容若不足只读实际大小
+        QByteArray data = file.read(64 * 1024 * 1024);// 64m  实际内容若不足只读实际大小
         //QByteArray catalog = file.readAll(); // 小文件可以一直全读在内存中，大文件必须分批处理
         hash.addData(data);
         //qApp->processEvents();//执行事件循环  防止界面卡顿。
     }
-    QByteArray md5 = hash.result();
+    QByteArray hashResult = hash.result();
     file.close();//及时关闭
-    return md5;
+    return hashResult.toHex().toUpper();
 }
 
 void FileCompareDiffWin::OpenCompareAsynchronousStep3New()
@@ -672,19 +675,9 @@ void FileCompareDiffWin::ToolButtonClicked(bool checked)
         });
     }
     else if(ToolButton->objectName()=="TestTBtn"){
-        //Test1();
-        // auto ret= QtConcurrent::run([this](){
-        //     while(true){
-        //         emit AppendPossessLog(tr("------------开始测试------------------------"));
-        //         Test1();
-        //         emit AppendPossessLog(tr("------------测试完成------------------------"));
-        //         QThread::msleep(1000);
-        //     }
-        //     return;
-        // });
 
-        // QByteArray md51= GetFileMd5("D:/Users/DJL/Desktop/UseDesk.txt");
-        // QByteArray md52= GetFileMd5("D:/Users/DJL/Desktop/UseDesk - 副本.txt");
+        // QByteArray md51= GetFileHash("G:/Game/刺客信条/刺客信条：起源/游戏/Assassins Creed Origins Gold Edition.part01.rar",QCryptographicHash::Md5);
+        // QByteArray md52= GetFileHash("G:/Game/刺客信条/刺客信条：起源/游戏/Assassins Creed Origins Gold Edition.part02.rar",QCryptographicHash::Md5);
 
         // // QString md5Str1 = QString(md51);
         // // QString md5Str2 = QString(md52);
@@ -851,10 +844,104 @@ void FileCompareDiffWin::TreeWidgetItemChanged(QTreeWidgetItem *item, int column
 
 void FileCompareDiffWin::TreeWidgetItemClicked(QTreeWidgetItem *item, int column)
 {
-    //qDebug()<<"TreeWidgetItemClicked: "<<item->text(0);
+    qDebug()<<"TreeWidgetItemClicked: "<<item->text(0);
 }
 
 void FileCompareDiffWin::TreeWidgetItemPressed(QTreeWidgetItem *item, int column)
 {
-    qDebug()<<"TreeWidgetItemPressed: "<<item->text(0);
+    // 弹出一个菜单, 菜单项是 QAction 类型
+    QMenu *pMenu=new QMenu(this);
+
+    QAction* openFileDirPathAct  = new QAction(tr("打开文件所在路径"),pMenu);
+    QAction* viewComparisonDetailsAct = new QAction("查看对比详情",pMenu);
+
+    pMenu->addAction(openFileDirPathAct);
+    pMenu->addAction(viewComparisonDetailsAct);
+
+    connect(openFileDirPathAct, &QAction::triggered, this, [=](){
+        QString fileName=item->text(0);
+        QString filePath=item->text(2);
+        QString OR=item->text(3);
+        QString fileAbsPath=filePath+"/"+fileName;
+
+        if(OR=="1/2"){
+            QString realFileAbsPath1=fileAbsPath;
+            QString realFileAbsPath2=fileAbsPath.replace(FileOrDirPath1,FileOrDirPath2);
+
+            // // realFileAbsPath1.replace("/", "\\"); // 只能识别 "\"
+            // // realFileAbsPath2.replace("/", "\\"); // 只能识别 "\"
+            // realFileAbsPath1.remove(realFileAbsPath1.split("/").last());
+            // realFileAbsPath2.remove(realFileAbsPath2.split("/").last());
+
+            // //这是直接打开文件
+            // // QDesktopServices::openUrl(QUrl(QString("file:///%1").arg(realFileAbsPath1)));
+            // // QDesktopServices::openUrl(QUrl(QString("file:///%1").arg(realFileAbsPath2)));
+            // //或是这样
+            // QDesktopServices::openUrl(QUrl(realFileAbsPath1));
+            // QDesktopServices::openUrl(QUrl(realFileAbsPath2));
+            // //Qt打开指定目录并选中文件
+
+            // realFileAbsPath1.replace("/", "\\"); // 只能识别 "\"
+            // QString cmd = QString("explorer.exe /select,\"%1\"").arg(realFileAbsPath1);
+
+            // QProcess process;
+            // process.startDetached(cmd);
+
+            QProcess::execute(QString("explorer /select,\"%1\"").arg(realFileAbsPath1));
+
+            // process.startDetached(QString("explorer.exe /select,\"%1\"").arg(realFileAbsPath1));//启动后分离，即非阻塞
+            // process.startDetached(QString("explorer.exe /select,\"%1\"").arg(realFileAbsPath2));//启动后分离，即非阻塞
+        }
+        if(OR=="1"){
+            QString realFileAbsPath1=fileAbsPath;
+
+            // //这是直接打开文件
+            // QDesktopServices::openUrl(QUrl(QString("file:///%1").arg(realFileAbsPath1)));
+            //Qt打开指定目录并选中文件
+            QProcess process;
+
+            realFileAbsPath1.replace("/", "\\"); // 只能识别 "\"
+
+            process.startDetached(QString("explorer.exe /select,\"%1\"").arg(realFileAbsPath1));//启动后分离，即非阻塞
+        }
+        if(OR=="2"){
+            QString realFileAbsPath2=fileAbsPath;
+
+            // //这是直接打开文件
+            // QDesktopServices::openUrl(QUrl(QString("file:///%1").arg(realFileAbsPath2)));
+            //Qt打开指定目录并选中文件
+            QProcess process;
+
+            realFileAbsPath2.replace("/", "\\"); // 只能识别 "\"
+
+            process.startDetached(QString("explorer.exe /select,\"%1\"").arg(realFileAbsPath2));//启动后分离，即非阻塞
+        }
+    });
+
+    //自定义一个对比详情界面
+    connect(viewComparisonDetailsAct, &QAction::triggered, this, [=](){
+        QString fileName=item->text(0);
+        QString fileType=item->text(1);
+        QString filePath=item->text(2);
+        QString OR=item->text(3);
+        QString fileAbsPath=filePath+"/"+fileName;
+
+        if(OR!="1/2"||fileType!=tr("file")){
+            return;
+        }
+
+        QString realFileAbsPath1=fileAbsPath;
+        QString realFileAbsPath2=fileAbsPath.replace(FileOrDirPath1,FileOrDirPath2);
+
+        DialogBase *pDialogBaseWin=new FileCompareDiffDetailsWin("other");
+        FileCompareDiffDetailsWin *pFileCompareDiffDetailsWin= dynamic_cast<FileCompareDiffDetailsWin*>(pDialogBaseWin);
+        pDialogBaseWin->setAttribute(Qt::WA_DeleteOnClose);
+        pDialogBaseWin->InitClass();
+        pFileCompareDiffDetailsWin->SetFile1And2Path(realFileAbsPath1,realFileAbsPath2);
+        pFileCompareDiffDetailsWin->OpenDiff();
+        pFileCompareDiffDetailsWin->exec();
+    });
+    pMenu->exec(QCursor::pos());	// 右键菜单被模态显示出来了
+    delete pMenu;
+    //qDebug()<<"TreeWidgetItemPressed: "<<item->text(0);
 }

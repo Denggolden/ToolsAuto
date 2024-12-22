@@ -9,8 +9,8 @@
 //pMainWin->setObjectName("MainWin");
 //Ins.AddObjectIns(pMainWin);
 
-#define CreateWin(ClassName,ObjName)\
-    p##ObjName=new ClassName();\
+#define CreateWin(ClassName,ObjName,...)\
+    p##ObjName=new ClassName(__VA_ARGS__);\
     p##ObjName->setObjectName(#ObjName);\
     Ins.AddObjectIns(p##ObjName);
 
@@ -33,6 +33,7 @@ class DataEditWin;
 
 class FileCompareDiffMainWin;
 class FileCompareDiffWin;
+class FileCompareDiffDetailsWin;
 
 class MainWin;
 
@@ -70,6 +71,7 @@ private:
 
     FileCompareDiffMainWin *pFileCompareDiffMainWin=nullptr;
     FileCompareDiffWin *pFileCompareDiffWin=nullptr;
+    FileCompareDiffDetailsWin *pFileCompareDiffDetailsWin=nullptr;
 
     MainWin *pMainWin=nullptr;
 

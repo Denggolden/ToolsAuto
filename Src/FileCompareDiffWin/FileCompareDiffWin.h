@@ -6,6 +6,8 @@
 
 #include "Src/Common/GlobalCus.h"
 
+#include <QCryptographicHash>
+
 class QTreeWidgetItem;
 
 //还差临时文件索引路径选择
@@ -82,8 +84,11 @@ protected:
     void OpenCompareAsynchronousStep2New();
     void FoEachDirTempAsyn();
     void FoEachDirTempAsyn(QString dirPath,QTreeWidgetItem* root,int sleepCount);
-    bool JudgeTowFileIsConsistent(const QString &filePath1,const QString & filePath2);//判断两个文件是否一样
-    QByteArray GetFileMd5(const QString &fileName);
+    bool JudgeTowFileIsConsistent(const QString &filePath1,const QString & filePath2);//判断两个文件是否一样  比较md5 sha1 ...
+    //获取文件高级信息
+    QString GetFileHashStr(const QString &fileName,QCryptographicHash::Algorithm algorithm);
+
+    //QCryptographicHash
 
     //开始比较第三步（遍历临时文件夹 删除临时文件）
     void OpenCompareAsynchronousStep3New();

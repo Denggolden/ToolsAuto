@@ -1,4 +1,5 @@
 HEADERS += \
+    $$PWD/DialogBase.h \
     $$PWD/GlobalCus.h \
     $$PWD/LogHandel.h \
     $$PWD/ObjectBase.h \
@@ -6,6 +7,7 @@ HEADERS += \
     $$PWD/WidgetBase.h
 
 SOURCES += \
+    $$PWD/DialogBase.cpp \
     $$PWD/GlobalCus.cpp \
     $$PWD/LogHandel.cpp \
     $$PWD/ObjectBase.cpp \

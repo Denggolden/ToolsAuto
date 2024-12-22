@@ -4,6 +4,7 @@
 
 #include "Src/Common/ReflexObject.h"
 #include "Src/FileCompareDiffWin/FileCompareDiffWin.h"
+#include "Src/FileCompareDiffWin/FileCompareDiffDetailsWin.h"
 
 FileCompareDiffMainWin::FileCompareDiffMainWin(QWidget *parent)
     : WidgetBase(parent)
@@ -28,17 +29,17 @@ void FileCompareDiffMainWin::InitClass()
 void FileCompareDiffMainWin::InitTabWidget()
 {
     FileCompareDiffWin *pFileCompareDiffWin= dynamic_cast<FileCompareDiffWin*>(ReflexObject::Instance()->GetObjectIns("FileCompareDiffWin"));
-    // TsFileExportWin *pTsFileExportWin=dynamic_cast<TsFileExportWin*>(ReflexObject::Instance()->GetObjectIns("TsFileExportWin"));
+    FileCompareDiffDetailsWin *pFileCompareDiffDetailsWin=dynamic_cast<FileCompareDiffDetailsWin*>(ReflexObject::Instance()->GetObjectIns("FileCompareDiffDetailsWin"));
     // TsFileTranslateWin *pTsFileTranslateWin=dynamic_cast<TsFileTranslateWin*>(ReflexObject::Instance()->GetObjectIns("TsFileTranslateWin"));
     // QMFileGenerateWin *pQMFileGenerateWin=dynamic_cast<QMFileGenerateWin*>(ReflexObject::Instance()->GetObjectIns("QMFileGenerateWin"));
 
     ui->tabWidget->insertTab(1,pFileCompareDiffWin,tr("文件(夹)对比"));
-    // ui->tabWidget->insertTab(2,pTsFileExportWin,tr("TS文件导出"));
+    ui->tabWidget->insertTab(2,pFileCompareDiffDetailsWin,tr("文件对比"));
     // ui->tabWidget->insertTab(3,pTsFileTranslateWin,tr("TS文件翻译"));
     // ui->tabWidget->insertTab(4,pQMFileGenerateWin,tr("QM文件生成"));
 
-    // ui->tabWidget->widget(1)->setObjectName("TsFileCreateWin");
-    // ui->tabWidget->widget(2)->setObjectName("TsFileExportWin");
+    ui->tabWidget->widget(1)->setObjectName("FileCompareDiffWin");
+    ui->tabWidget->widget(2)->setObjectName("FileCompareDiffDetailsWin");
     // ui->tabWidget->widget(3)->setObjectName("TsFileTranslateWin");
     // ui->tabWidget->widget(4)->setObjectName("QMFileGenerateWin");
 

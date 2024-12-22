@@ -2,6 +2,7 @@
 #include <QDebug>
 #include "Src/Common/ObjectBase.h"
 #include "Src/Common/WidgetBase.h"
+#include "Src/Common/DialogBase.h"
 
 #include "MainWin.h"
 
@@ -24,6 +25,7 @@
 
 #include "Src/FileCompareDiffWin/FileCompareDiffMainWin.h"
 #include "Src/FileCompareDiffWin/FileCompareDiffWin.h"
+#include "Src/FileCompareDiffWin/FileCompareDiffDetailsWin.h"
 
 ReflexObject ReflexObject::Ins;
 
@@ -97,6 +99,7 @@ void ReflexObject::InitObjectIns()
     //软件主体-文件(夹)对比
     CreateWin(FileCompareDiffMainWin,FileCompareDiffMainWin);
     CreateWin(FileCompareDiffWin,FileCompareDiffWin);
+    CreateWin(FileCompareDiffDetailsWin,FileCompareDiffDetailsWin,"defeat");
 
     //InitClassObj();
 }
@@ -115,6 +118,11 @@ void ReflexObject::InitClassObj()
             //qDebug() << "此类为 WidgetBase";
             WidgetBase *pWidgetBase = dynamic_cast<WidgetBase*>(it.value());
             pWidgetBase->InitClass();
+        }
+        if ((dynamic_cast<DialogBase*>(it.value())) != nullptr) {
+            //qDebug() << "此类为 WidgetBase";
+            DialogBase *pDialogBase = dynamic_cast<DialogBase*>(it.value());
+            pDialogBase->InitClass();
         }
     }
 }
