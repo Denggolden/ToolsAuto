@@ -34,6 +34,7 @@ class DataEditWin;
 class FileCompareDiffMainWin;
 class FileCompareDiffWin;
 class FileCompareDiffDetailsWin;
+class FileInfoExtractWin;
 
 class MainWin;
 
@@ -72,6 +73,7 @@ private:
     FileCompareDiffMainWin *pFileCompareDiffMainWin=nullptr;
     FileCompareDiffWin *pFileCompareDiffWin=nullptr;
     FileCompareDiffDetailsWin *pFileCompareDiffDetailsWin=nullptr;
+    FileInfoExtractWin *pFileInfoExtractWin=nullptr;
 
     MainWin *pMainWin=nullptr;
 

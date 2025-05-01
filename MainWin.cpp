@@ -69,6 +69,8 @@ void MainWin::InitClass()
 
     //设置无边框
     this->setWindowFlags(Qt::FramelessWindowHint);
+    // //this->setAttribute(Qt::WA_TranslucentBackground, true);//窗体背景全透明
+    // this->setWindowOpacity(0.5);//这行代码会使主窗体及其所有的子控件整体半透明，见下图右
 }
 
 
@@ -82,6 +84,7 @@ void MainWin::InitListWidget()
 
     QStringList listName;listName.clear();
     listName<<tr("Qt翻译自动化")<<tr("文件处理")<<tr("数据模型编辑")<<tr("文件(夹)对比");
+    // listName<<tr("翻译自动化")<<tr("文件处理")<<tr("数据模型编辑")<<tr("文件(夹)对比");
     pListWidget->addItems(listName);
 
     connect(pListWidget,&QListWidget::currentRowChanged,this,&MainWin::CurrentRowChangedSlots);
@@ -180,6 +183,11 @@ void MainWin::paintEvent(QPaintEvent *paint)
     painter.setRenderHint(QPainter::Antialiasing);
     painter.drawRoundedRect(bmp.rect(), 10, 10);
     setMask(bmp);
+}
+
+void MainWin::mousePressEvent(QMouseEvent *event)
+{
+    qDebug()<<"MainWin::mousePressEvent(QMouseEvent *event)";
 }
 
 #if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))

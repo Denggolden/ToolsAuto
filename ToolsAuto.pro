@@ -28,6 +28,7 @@ include($$PWD/Src/Common/Common.pri)
 include($$PWD/Src/FileConvertWin/FileConvertWin.pri)
 include($$PWD/Src/DataModelEditWin/DataModelEditWin.pri)
 include($$PWD/Src/FileCompareDiffWin/FileCompareDiffWin.pri)
+include($$PWD/Src/AnimationEffect/AnimationEffect.pri)
 
 #第三方库
 include($$PWD/ThirdLib/ThirdLib.pri)

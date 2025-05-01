@@ -62,6 +62,7 @@ protected:
     void showEvent(QShowEvent *) override;;//打开窗口时执行
     void resizeEvent(QResizeEvent *event) override;
     void paintEvent(QPaintEvent *paint) override;
+    void mousePressEvent(QMouseEvent *event) override;
 
 #if (QT_VERSION <= QT_VERSION_CHECK(SplitMajor,SplitMinor,SplitPatch))
     bool nativeEvent(const QByteArray& eventType, void* message, long* result) override;

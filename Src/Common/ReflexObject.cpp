@@ -26,6 +26,7 @@
 #include "Src/FileCompareDiffWin/FileCompareDiffMainWin.h"
 #include "Src/FileCompareDiffWin/FileCompareDiffWin.h"
 #include "Src/FileCompareDiffWin/FileCompareDiffDetailsWin.h"
+#include "Src/FileCompareDiffWin/FileInfoExtractWin.h"
 
 ReflexObject ReflexObject::Ins;
 
@@ -100,6 +101,7 @@ void ReflexObject::InitObjectIns()
     CreateWin(FileCompareDiffMainWin,FileCompareDiffMainWin);
     CreateWin(FileCompareDiffWin,FileCompareDiffWin);
     CreateWin(FileCompareDiffDetailsWin,FileCompareDiffDetailsWin,"defeat");
+    CreateWin(FileInfoExtractWin,FileInfoExtractWin);
 
     //InitClassObj();
 }

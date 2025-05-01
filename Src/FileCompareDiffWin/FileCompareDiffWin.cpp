@@ -868,6 +868,8 @@ void FileCompareDiffWin::TreeWidgetItemPressed(QTreeWidgetItem *item, int column
         QString OR=item->text(3);
         QString fileAbsPath=filePath+"/"+fileName;
 
+        const QString explorer = "explorer";
+
         if(OR=="1/2"){
             QString realFileAbsPath1=fileAbsPath;
             QString realFileAbsPath2=fileAbsPath.replace(FileOrDirPath1,FileOrDirPath2);
@@ -891,7 +893,15 @@ void FileCompareDiffWin::TreeWidgetItemPressed(QTreeWidgetItem *item, int column
             // QProcess process;
             // process.startDetached(cmd);
 
-            QProcess::execute(QString("explorer /select,\"%1\"").arg(realFileAbsPath1));
+            //QProcess::execute(QString("explorer /select,\"%1\"").arg(realFileAbsPath1));
+
+            // //打开资源管理器并高亮文件
+            // auto ret= QtConcurrent::run([=](){
+            //     QProcess process;
+            //     process.start(explorer,QStringList(QString("/select,%1").arg(QDir::toNativeSeparators(realFileAbsPath1))));
+            //     process.start(explorer,QStringList(QString("/select,%1").arg(QDir::toNativeSeparators(realFileAbsPath2))));
+            //     return;
+            // });
 
             // process.startDetached(QString("explorer.exe /select,\"%1\"").arg(realFileAbsPath1));//启动后分离，即非阻塞
             // process.startDetached(QString("explorer.exe /select,\"%1\"").arg(realFileAbsPath2));//启动后分离，即非阻塞
@@ -899,26 +909,14 @@ void FileCompareDiffWin::TreeWidgetItemPressed(QTreeWidgetItem *item, int column
         if(OR=="1"){
             QString realFileAbsPath1=fileAbsPath;
 
-            // //这是直接打开文件
-            // QDesktopServices::openUrl(QUrl(QString("file:///%1").arg(realFileAbsPath1)));
-            //Qt打开指定目录并选中文件
             QProcess process;
-
-            realFileAbsPath1.replace("/", "\\"); // 只能识别 "\"
-
-            process.startDetached(QString("explorer.exe /select,\"%1\"").arg(realFileAbsPath1));//启动后分离，即非阻塞
+            process.start(explorer,QStringList(QString("/select,%1").arg(QDir::toNativeSeparators(realFileAbsPath1))));
+            //QProcess::startDetached(explorer,QStringList(QString("/select,%1").arg(QDir::toNativeSeparators(realFileAbsPath1))));
         }
         if(OR=="2"){
             QString realFileAbsPath2=fileAbsPath;
 
-            // //这是直接打开文件
-            // QDesktopServices::openUrl(QUrl(QString("file:///%1").arg(realFileAbsPath2)));
-            //Qt打开指定目录并选中文件
-            QProcess process;
-
-            realFileAbsPath2.replace("/", "\\"); // 只能识别 "\"
-
-            process.startDetached(QString("explorer.exe /select,\"%1\"").arg(realFileAbsPath2));//启动后分离，即非阻塞
+            QProcess::startDetached(explorer,QStringList(QString("/select,%1").arg(QDir::toNativeSeparators(realFileAbsPath2))));
         }
     });
 
